@@ -79,8 +79,8 @@ public class Minimarket extends JFrame {
         int nilai = 0;
         try {
             RandomAccessFile raf = new RandomAccessFile(f+namaFile, "rw");
-            Username = raf.readLine().substring(11);
-            Password = raf.readLine().substring(11);
+            Username = raf.readLine();
+            Password = raf.readLine();
             for(int i=0; i<(ln-2); i+=5){
                 Username = raf.readLine().substring(11);
                 Password = raf.readLine().substring(11);
