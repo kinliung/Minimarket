@@ -1,22 +1,144 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package minimarket;
+
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 
 /**
  *
  * @author DriftKing
  */
-public class cekStok extends javax.swing.JFrame {
+public class cekStock extends javax.swing.JFrame {
 
     /**
      * Creates new form cekStok
      */
-    public cekStok() {
+    public cekStock() {
         initComponents();
     }
+    
+    String jenisBarang, namaBarang, tanggalMasuk;
+    int ln, hargaBarang, stokBarang;
+    
+    File f = new File("c:\\minimarket\\data");
+    
+    class notepad {
+
+        public notepad() {
+        }
+    }
+    
+    void createFolder(){
+        if(!f.exists()){
+            f.mkdirs();
+        }
+    }
+    
+    void readFile(String namaFile){
+        try {
+            FileReader fr = new FileReader(f+namaFile);
+            System.out.println("File Exist!");
+        } catch (FileNotFoundException ex) {
+            try {
+                FileWriter fw = new FileWriter(f+namaFile);
+                System.out.println("File Created!");
+            } catch (IOException ex1) {
+                Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }
+        
+    }
+    
+    void addData(String nama, String alamat, String usr, String pass, String namaFile){
+        try {
+            RandomAccessFile raf = new RandomAccessFile(f+namaFile, "rw");
+            for(int i=0; i<ln; i++){
+                raf.readLine();
+            }
+            raf.writeBytes("Nama : "+nama+"\r\n");
+            raf.writeBytes("Alamat : "+alamat+"\r\n");
+            raf.writeBytes("Username : "+usr+"\r\n");
+            raf.writeBytes("Password : "+pass+"\r\n");
+            raf.writeBytes("\r\n");
+            JOptionPane.showMessageDialog(null, "Registrasi Berhasil, Silahkan Login!");
+            }
+        catch (FileNotFoundException ex) {
+            Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    void checkStock(String namaFile){
+        try {
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            int rowCount = model.getRowCount();
+            //Remove rows one by one from the end of the table
+            for (int i = rowCount - 1; i >= 0; i--) {
+                model.removeRow(i);
+            }
+            RandomAccessFile raf = new RandomAccessFile(f+namaFile, "rw");
+            for(int i=0; i<(ln-2); i+=7){
+                jenisBarang = raf.readLine().substring(15);
+                namaBarang = raf.readLine().substring(14);
+                hargaBarang = Integer.parseInt(raf.readLine().substring(8));
+                stokBarang = Integer.parseInt(raf.readLine().substring(8));
+                tanggalMasuk = raf.readLine().substring(16);
+                //Object row[][] = {{jenisBarang,namaBarang,stokBarang,hargaBarang,tanggalMasuk}};
+                model.addRow(new Object[]{jenisBarang, namaBarang, stokBarang, hargaBarang, tanggalMasuk});
+                //jTable1.addRow(new Object[]{"Column 1", "Column 2", "Column 3"});
+                System.out.println(jenisBarang);
+                if (i==(ln-6)){
+                    break;
+                }
+                for(int k=1; k<=2; k++){
+                    raf.readLine();
+                }
+            }
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    void countLines2(String namaFile){
+        try {
+            ln = 1;
+            RandomAccessFile raf = new RandomAccessFile(f+namaFile, "rw");
+            for(int i=0; raf.readLine()!=null; i++){
+                ln++;
+            }
+            System.out.println("Number of lines: "+ln);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Minimarket.notepad.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Minimarket.notepad.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    
+    
+    //void refreshData(){
+      //  RandomAccessFile raf = new RandomAccessFile(f+namaFile, "rw");
+        
+        //jTable1.addRow(new Object[]{"Column 1", "Column 2", "Column 3"});
+        
+    //}
+    
+    
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -24,7 +146,7 @@ public class cekStok extends javax.swing.JFrame {
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -133,7 +255,9 @@ public class cekStok extends javax.swing.JFrame {
                 backButtonActionPerformed(evt);
             }
         });
-
+        
+        
+        
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -144,13 +268,8 @@ public class cekStok extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setHeaderValue("Jenis Barang");
-            jTable1.getColumnModel().getColumn(1).setHeaderValue("Nama Barang");
             jTable1.getColumnModel().getColumn(2).setPreferredWidth(10);
-            jTable1.getColumnModel().getColumn(2).setHeaderValue("Stok");
             jTable1.getColumnModel().getColumn(3).setPreferredWidth(20);
-            jTable1.getColumnModel().getColumn(3).setHeaderValue("Harga");
-            jTable1.getColumnModel().getColumn(4).setHeaderValue("Tanggal Masuk");
         }
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -199,23 +318,31 @@ public class cekStok extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+        setTitle("Manager - Cek Stok Barang");
+    }// </editor-fold>                        
 
-    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
         // TODO add your handling code here:
-    }//GEN-LAST:event_updateButtonActionPerformed
+    }                                            
 
-    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_backButtonActionPerformed
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {                                           
+        setVisible(false);
+        Manager manager = new Manager();
+        manager.launchFrame();
+    }                                          
 
-    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
+    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
         // TODO add your handling code here:
-    }//GEN-LAST:event_clearButtonActionPerformed
+    }                                           
 
-    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {  
+        createFolder();
+        readFile("\\DataStok.txt");
+        countLines2("\\DataStok.txt");
+        checkStock("\\DataStok.txt");
+        
         // TODO add your handling code here:
-    }//GEN-LAST:event_refreshButtonActionPerformed
+    }                                             
 
     /**
      * @param args the command line arguments
@@ -234,25 +361,25 @@ public class cekStok extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(cekStok.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Minimarket.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(cekStok.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Minimarket.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(cekStok.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Minimarket.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(cekStok.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Minimarket.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new cekStok().setVisible(true);
+                new cekStock().setVisible(true);
             }
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JButton backButton;
     private javax.swing.JButton clearButton;
     private javax.swing.JComboBox<String> comboBox1;
@@ -270,5 +397,5 @@ public class cekStok extends javax.swing.JFrame {
     private javax.swing.JLabel tgglmskLabel;
     private javax.swing.JTextField tgglmskTextField;
     private javax.swing.JButton updateButton;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }

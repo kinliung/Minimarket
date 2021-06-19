@@ -255,6 +255,14 @@ public class inputBarang extends javax.swing.JFrame {
         
         );
         add(jLabel8);
+        setSize(400, 400);
+        setTitle("Manager - Input Barang");
+        // Centering the screen on the desktop
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension frameSize = getSize();
+        setLocation(((screenSize.width - frameSize.width) / 2),
+        ((screenSize.height - frameSize.height) / 2));
+        setVisible(true);
     }                      
     
     
@@ -371,19 +379,6 @@ public class inputBarang extends javax.swing.JFrame {
                 new inputBarang().setVisible(true);
             }
         });
-    }
-    
-    
-    public void launchFrame() {
-        setSize(400, 400);
-        
-        setTitle("Manager - Input Barang");
-        // Centering the screen on the desktop
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension frameSize = getSize();
-        setLocation(((screenSize.width - frameSize.width) / 2),
-        ((screenSize.height - frameSize.height) / 2));
-        setVisible(true);
     }
 
     // Variables declaration - do not modify                     
