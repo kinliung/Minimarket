@@ -62,6 +62,36 @@ public class inputBarang extends javax.swing.JFrame {
     }
     
     
+     int checkData2(String namaBrg, String namaFile){
+        int nilai = 0;
+        try {
+            RandomAccessFile raf = new RandomAccessFile(f+namaFile, "rw");
+            namaBarang = raf.readLine();
+            for(int i=0; i<(ln-2); i+=7){
+                namaBarang = raf.readLine().substring(14);
+                if(namaBrg.equals(namaBarang)){
+                    JOptionPane.showMessageDialog(null, "Nama Barang Sudah Ada, Silahkan Jika Ingin Update Stok Pada Menu 'Cek Stok'!");
+                    nilai = 1;
+                    break;
+                }
+                else if (i==(ln-6)){
+                    nilai = 0;
+                    break;
+                }
+                for(int k=1; k<=6; k++){
+                    raf.readLine();
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Minimarket.notepad.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Minimarket.notepad.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return nilai;
+    }
+    
+    
+    
     
     public inputBarang() {
         initComponents();
@@ -280,29 +310,32 @@ public class inputBarang extends javax.swing.JFrame {
         jTextField5.setText("");
     }       
     
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) { 
-        if(jTextField1.getText().isEmpty() || jTextField2.getText().isEmpty() 
-                    || jTextField3.getText().isEmpty() || jTextField4.getText().isEmpty()){
-                JOptionPane.showMessageDialog(null, "Pastikan Tidak Ada Field Yang Kosong!");
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
+        Minimarket minimarket = new Minimarket();
+        minimarket.createFolder();
+        minimarket.readFile("\\DataStok.txt");
+        countLines2("\\DataStok.txt");
+        if (checkData2(jTextField1.getText(),"\\DataStok.txt")==1){
+                jLabel8.setText("Gagal Disimpan!");
         }
         else
         {
-            hargaBarang = Integer.parseInt(jTextField2.getText());
-            stokBarang = Integer.parseInt(jTextField3.getText());
-            Minimarket minimarket = new Minimarket();
-            minimarket.createFolder();
-            minimarket.readFile("\\DataStok.txt");
-            countLines2("\\DataStok.txt");
-            addData2(jenisBarang,jTextField1.getText(),jTextField4.getText(),jTextField5.getText(),hargaBarang,stokBarang,"\\DataStok.txt");
-            jLabel8.setText("Berhasil Disimpan!");
-            jTextField1.setText("");
-            jTextField2.setText("");
-            jTextField3.setText("");
-            jTextField4.setText("");
-            jTextField5.setText("");
+            if(jTextField1.getText().isEmpty() || jTextField2.getText().isEmpty() 
+                || jTextField3.getText().isEmpty() || jTextField4.getText().isEmpty()){
+                    JOptionPane.showMessageDialog(null, "Pastikan Tidak Ada Field Yang Kosong!");
+            }
+            else{
+                hargaBarang = Integer.parseInt(jTextField2.getText());
+                stokBarang = Integer.parseInt(jTextField3.getText());
+                addData2(jenisBarang,jTextField1.getText(),jTextField4.getText(),jTextField5.getText(),hargaBarang,stokBarang,"\\DataStok.txt");
+                jLabel8.setText("Berhasil Disimpan!");
+                jTextField1.setText("");
+                jTextField2.setText("");
+                jTextField3.setText("");
+                jTextField4.setText("");
+                jTextField5.setText("");
+            }
         }
-        
-        
     }                                        
     
     
