@@ -618,12 +618,12 @@ class Manager extends JFrame implements ActionListener {
         if(ae.getSource() == inputBarang) {
             loginFrame.setVisible(false);
             inputBarang ib = new inputBarang();
-            ib.launchFrame();
+            ib.setVisible(true);
         }
         else if (ae.getSource() == cekStok){
             loginFrame.setVisible(false);
-            //LogMAN logman = new LogMAN();
-            //logman.launchFrame();
+            cekStock cekstk = new cekStock();
+            cekstk.setVisible(true);
         }
         else if (ae.getSource() == logOut){
             loginFrame.setVisible(false);
