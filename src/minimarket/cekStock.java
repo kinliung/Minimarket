@@ -1,33 +1,27 @@
 package minimarket;
 
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-
-/**
- *
- * @author DriftKing
- */
 public class cekStock extends javax.swing.JFrame {
-
-    /**
-     * Creates new form cekStok
-     */
     public cekStock() {
         initComponents();
     }
     
-    String jenisBarang, namaBarang, tanggalMasuk;
-    int ln, hargaBarang, stokBarang;
+    String jenisBarang, namaBarang, tanggalMasuk, selectedComboBox;
+    int ln, ln2, hargaBarang, stokBarang;
+    String oldHarga, oldStock, oldTgglMsk, oldTgglKdlrs;
+    
+    
     
     File f = new File("c:\\minimarket\\data");
     
@@ -93,10 +87,7 @@ public class cekStock extends javax.swing.JFrame {
                 hargaBarang = Integer.parseInt(raf.readLine().substring(8));
                 stokBarang = Integer.parseInt(raf.readLine().substring(8));
                 tanggalMasuk = raf.readLine().substring(16);
-                //Object row[][] = {{jenisBarang,namaBarang,stokBarang,hargaBarang,tanggalMasuk}};
                 model.addRow(new Object[]{jenisBarang, namaBarang, stokBarang, hargaBarang, tanggalMasuk});
-                //jTable1.addRow(new Object[]{"Column 1", "Column 2", "Column 3"});
-                System.out.println(jenisBarang);
                 if (i==(ln-6)){
                     break;
                 }
@@ -111,6 +102,83 @@ public class cekStock extends javax.swing.JFrame {
             Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    void checkCombo(String namaFile){
+        try {
+            RandomAccessFile raf = new RandomAccessFile(f+namaFile, "rw");
+            raf.readLine();
+            for(int i=0; i<(ln-2); i+=7){
+                namaBarang = raf.readLine().substring(14);
+                comboBox1.addItem(namaBarang);
+                if (i==(ln-6)){
+                    break;
+                }
+                for(int k=1; k<=6; k++){
+                    raf.readLine();
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    int checkNamaBarang(String nmbrng, String namaFile){
+        int nilai = 0;
+        try {
+            RandomAccessFile raf = new RandomAccessFile(f+namaFile, "rw");
+            raf.readLine();
+            for(int i=0; i<(ln-2); i+=7){
+                namaBarang = raf.readLine().substring(14);
+                if(nmbrng.equals(namaBarang)){
+                    oldHarga = raf.readLine();
+                    oldStock = raf.readLine();
+                    oldTgglMsk = raf.readLine();
+                    oldTgglKdlrs = raf.readLine();
+                    
+                    nilai = 1;
+                    break;
+                }
+                if (i==(ln-6)){
+                    nilai = 0;
+                    break;
+                }
+                for(int k=1; k<=6; k++){
+                    raf.readLine();
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return nilai;
+    }
+    
+    
+    void updateData() throws FileNotFoundException{
+        Scanner sc = new Scanner(new File("c:\\minimarket\\data\\DataStok.txt"));
+        StringBuffer buffer = new StringBuffer();
+        while (sc.hasNextLine()) {
+            buffer.append(sc.nextLine()+System.lineSeparator());
+        }
+        String fileContents = buffer.toString();
+        sc.close();
+        fileContents = fileContents.replaceAll(oldHarga, "Harga : "+hargaTextField.getText());
+        try {
+            FileWriter writer = new FileWriter("c:\\minimarket\\data\\DataStok.txt");
+            writer.append(fileContents);
+            writer.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        
+        
+    }
+    
     
     void countLines2(String namaFile){
         try {
@@ -128,25 +196,7 @@ public class cekStock extends javax.swing.JFrame {
         
     }
     
-    
-    //void refreshData(){
-      //  RandomAccessFile raf = new RandomAccessFile(f+namaFile, "rw");
-        
-        //jTable1.addRow(new Object[]{"Column 1", "Column 2", "Column 3"});
-        
-    //}
-    
-    
-    
-    
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+                        
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -171,7 +221,12 @@ public class cekStock extends javax.swing.JFrame {
 
         jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        comboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
+        comboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboBox1ActionPerformed(evt);
+            }
+        });
 
         stokLabel.setText("Stok");
 
@@ -194,6 +249,8 @@ public class cekStock extends javax.swing.JFrame {
                 updateButtonActionPerformed(evt);
             }
         });
+        
+        
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -315,14 +372,41 @@ public class cekStock extends javax.swing.JFrame {
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(36, Short.MAX_VALUE))
         );
-
         pack();
         setLocationRelativeTo(null);
         setTitle("Manager - Cek Stok Barang");
-    }// </editor-fold>                        
+        addComboBox();
+        
+    }       
+    
+    
+    void addComboBox(){
+        createFolder();
+        readFile("\\DataStok.txt");
+        countLines2("\\DataStok.txt");
+        checkCombo("\\DataStok.txt");
+    }
+    
+    private void comboBox1ActionPerformed(java.awt.event.ActionEvent evt){
+        selectedComboBox = comboBox1.getSelectedItem().toString();
+    }
+    
+    
 
-    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
-        // TODO add your handling code here:
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {  
+        Minimarket minimarket = new Minimarket();
+        minimarket.createFolder();
+        minimarket.readFile("\\DataStok.txt");
+        countLines2("\\DataStok.txt");
+        if(checkNamaBarang(selectedComboBox,"\\DataStok.txt")==1){
+            try {
+                updateData();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        addComboBox();
     }                                            
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {                                           
@@ -332,7 +416,10 @@ public class cekStock extends javax.swing.JFrame {
     }                                          
 
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
-        // TODO add your handling code here:
+        tgglmskTextField.setText("");
+        stokTextField.setText("");
+        hargaTextField.setText("");
+        tgglkdlrsaTextField.setText("");
     }                                           
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {  
@@ -340,19 +427,8 @@ public class cekStock extends javax.swing.JFrame {
         readFile("\\DataStok.txt");
         countLines2("\\DataStok.txt");
         checkStock("\\DataStok.txt");
-        
-        // TODO add your handling code here:
     }                                             
-
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
