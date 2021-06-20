@@ -455,6 +455,12 @@ public class Kasir extends javax.swing.JFrame {
         );
 
         pack();
+        // Centering the screen on the desktop
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension frameSize = getSize();
+        setLocation(((screenSize.width - frameSize.width) / 2),
+        ((screenSize.height - frameSize.height) / 2));	
+        
         setTitle("Kasir");
         addComboBox();
         checkStock("\\DataStok.txt");

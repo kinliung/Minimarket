@@ -94,7 +94,7 @@ public class Minimarket extends JFrame {
                     break;
                 }
                 else if (i==(ln-6)){
-                    JOptionPane.showMessageDialog(null, "Incorrect Username/Password!");
+                    //JOptionPane.showMessageDialog(null, "Incorrect Username/Password!");
                     nilai = 0;
                     break;
                 }
@@ -376,11 +376,12 @@ class LogCAS extends JFrame implements ActionListener {
             //minimarket.checkData(usernameText.getText(),passText.getText());
             if (minimarket.checkData(usernameText.getText(),passText.getText(),"\\loginsCAS.txt")==1){
                 logCASFrame.setVisible(false);
-                //Menu menu = new Menu();
-                //menu.launchFrame();
+                Kasir kasir = new Kasir();
+                kasir.setVisible(true);
             }
             else{
                 logCASFrame.setVisible(true);
+                JOptionPane.showMessageDialog(null, "Incorrect Username/Password!");
             } 
         }
         else if(ae.getSource() == back){
@@ -563,6 +564,10 @@ class LogMAN extends JFrame implements ActionListener {
                 logMANFrame.setVisible(false);
                 Manager manager = new Manager();
                 manager.launchFrame();
+            }
+            else{
+                logMANFrame.setVisible(true);
+                JOptionPane.showMessageDialog(null, "Incorrect Username/Password!");
             }
         }
         else if(ae.getSource() == back){
