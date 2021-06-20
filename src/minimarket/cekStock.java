@@ -169,38 +169,6 @@ public class cekStock extends javax.swing.JFrame {
         }
     }
     
-    int checkNamaBarang(String nmbrng, String namaFile){
-        int nilai = 0;
-        try {
-            RandomAccessFile raf = new RandomAccessFile(f+namaFile, "rw");
-            raf.readLine();
-            for(int i=0; i<(ln-2); i+=7){
-                namaBarang = raf.readLine().substring(14);
-                if(nmbrng.equals(namaBarang)){
-                    oldHarga = raf.readLine();
-                    oldStock = raf.readLine();
-                    oldTgglMsk = raf.readLine();
-                    oldTgglKdlrs = raf.readLine();
-                    
-                    nilai = 1;
-                    break;
-                }
-                if (i==(ln-6)){
-                    nilai = 0;
-                    break;
-                }
-                for(int k=1; k<=6; k++){
-                    raf.readLine();
-                }
-            }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return nilai;
-    }
-    
     void gantiFile(){
         try{
             File oldFile = new File("c:\\minimarket\\data\\DataStok.txt");

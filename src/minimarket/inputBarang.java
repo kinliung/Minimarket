@@ -64,7 +64,7 @@ public class inputBarang extends javax.swing.JFrame {
     }
     
     
-     int checkData2(String namaBrg, String namaFile){
+    int checkData2(String namaBrg, String namaFile){
         int nilai = 0;
         try {
             RandomAccessFile raf = new RandomAccessFile(f+namaFile, "rw");
