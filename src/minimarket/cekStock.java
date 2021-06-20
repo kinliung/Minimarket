@@ -1,12 +1,13 @@
 package minimarket;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.RandomAccessFile;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -18,7 +19,7 @@ public class cekStock extends javax.swing.JFrame {
     }
     
     String jenisBarang, namaBarang, tanggalMasuk, selectedComboBox;
-    int ln, ln2, hargaBarang, stokBarang;
+    int ln, hargaBarang, stokBarang;
     String oldHarga, oldStock, oldTgglMsk, oldTgglKdlrs;
     
     
@@ -41,13 +42,17 @@ public class cekStock extends javax.swing.JFrame {
         try {
             FileReader fr = new FileReader(f+namaFile);
             System.out.println("File Exist!");
+            fr.close();
         } catch (FileNotFoundException ex) {
             try {
                 FileWriter fw = new FileWriter(f+namaFile);
                 System.out.println("File Created!");
+                fw.close();
             } catch (IOException ex1) {
                 Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex1);
             }
+        } catch (IOException ex) {
+            Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
@@ -124,6 +129,50 @@ public class cekStock extends javax.swing.JFrame {
         }
     }
     
+    public void editRecord(String oldNama, String newHarga, String newStok, String newTgglMsk, String newTgglKdlrsa){
+        File oldFile = new File("c:\\minimarket\\data\\DataStok.txt");
+        File newFile = new File("c:\\minimarket\\data\\tmp.txt");
+        String cekData;
+        try{
+            FileWriter fw = new FileWriter("c:\\minimarket\\data\\tmp.txt",true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            countLines2("\\DataStok.txt");
+            RandomAccessFile raf = new RandomAccessFile("c:\\minimarket\\data\\DataStok.txt", "rw");
+            for(int i=0; i<(ln-2); i++){
+                cekData = raf.readLine();
+                if(cekData.equals(oldNama)){
+                    pw.println(cekData);
+                    pw.println(newHarga);
+                    pw.println(newStok);
+                    pw.println(newTgglMsk);
+                    pw.println(newTgglKdlrsa);
+                    raf.readLine();
+                    raf.readLine();
+                    raf.readLine();
+                    raf.readLine();
+                    i+=4;
+                }
+                else{
+                    pw.println(cekData);
+                } 
+            }
+            pw.println();
+            pw.flush();
+            raf.close();
+            pw.close();
+            bw.close();
+            fw.close();
+            //oldFile.delete();
+            //oldFile.delete();
+            //File dump = new File("c:\\minimarket\\data\\DataStok.txt");
+            //newFile.renameTo(dump);
+        }
+        catch (Exception e) {
+            Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+    
     int checkNamaBarang(String nmbrng, String namaFile){
         int nilai = 0;
         try {
@@ -156,29 +205,18 @@ public class cekStock extends javax.swing.JFrame {
         return nilai;
     }
     
-    
-    void updateData() throws FileNotFoundException{
-        Scanner sc = new Scanner(new File("c:\\minimarket\\data\\DataStok.txt"));
-        StringBuffer buffer = new StringBuffer();
-        while (sc.hasNextLine()) {
-            buffer.append(sc.nextLine()+System.lineSeparator());
+    void gantiFile(){
+        try{
+            File oldFile = new File("c:\\minimarket\\data\\DataStok.txt");
+            oldFile.delete();
+            File dump = new File("c:\\minimarket\\data\\DataStok.txt");
+            File newFile = new File("c:\\minimarket\\data\\tmp.txt");
+            newFile.renameTo(dump);
         }
-        String fileContents = buffer.toString();
-        sc.close();
-        fileContents = fileContents.replaceAll(oldHarga, "Harga : "+hargaTextField.getText());
-        try {
-            FileWriter writer = new FileWriter("c:\\minimarket\\data\\DataStok.txt");
-            writer.append(fileContents);
-            writer.flush();
-        } catch (IOException ex) {
-            Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, ex);
+        catch(Exception e){
+            System.out.println("gagal");
         }
-        
-        
-        
-        
     }
-    
     
     void countLines2(String namaFile){
         try {
@@ -187,7 +225,7 @@ public class cekStock extends javax.swing.JFrame {
             for(int i=0; raf.readLine()!=null; i++){
                 ln++;
             }
-            System.out.println("Number of lines: "+ln);
+            raf.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Minimarket.notepad.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -393,21 +431,37 @@ public class cekStock extends javax.swing.JFrame {
     
     
 
-    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {  
-        Minimarket minimarket = new Minimarket();
-        minimarket.createFolder();
-        minimarket.readFile("\\DataStok.txt");
-        countLines2("\\DataStok.txt");
-        if(checkNamaBarang(selectedComboBox,"\\DataStok.txt")==1){
-            try {
-                updateData();
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, ex);
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) { 
+        if(stokTextField.getText().isEmpty() || hargaTextField.getText().isEmpty() 
+                || tgglmskTextField.getText().isEmpty()){
+                    JOptionPane.showMessageDialog(null, "Pastikan Tidak Ada Field Yang Kosong!");
             }
-        }
-        
-        addComboBox();
-    }                                            
+        else{
+            Minimarket minimarket = new Minimarket();
+            minimarket.createFolder();
+            minimarket.readFile("\\DataStok.txt");
+            countLines2("\\DataStok.txt");
+            
+            String filepath = "c:\\minimarket\\data\\DataStok.txt";
+            String oldNama = "Nama Barang : "+selectedComboBox;
+            String newHarga = "Harga : "+hargaTextField.getText();
+            String newStok = "Stock : "+stokTextField.getText();
+            String newTgglMsk = "Tanggal Masuk : "+tgglmskTextField.getText();
+            String newTgglKdlrsa = "Tanggal Kadaluarsa : "+tgglkdlrsaTextField.getText();
+
+            cekStock cS = new cekStock();
+            cS.editRecord(oldNama,newHarga,newStok,newTgglMsk,newTgglKdlrsa);
+            gantiFile();
+            //File oldFile = new File("c:\\minimarket\\data\\DataStok.txt");
+            //oldFile.delete();
+            //File dump = new File("c:\\minimarket\\data\\DataStok.txt");
+            //File newFile = new File("c:\\minimarket\\data\\tmp.txt");
+            //newFile.renameTo(dump);
+            //addComboBox();
+            //refreshButtonActionPerformed();
+            
+        }  
+    }                                     
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {                                           
         setVisible(false);
