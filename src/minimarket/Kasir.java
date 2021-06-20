@@ -384,6 +384,7 @@ public class Kasir extends javax.swing.JFrame {
 
         jLabel5.setText("SubTotal");
         subtotalTextField.setEditable(false);
+        totalFieldText.setEditable(false);
 
         clearButton.setText("Clear");
         clearButton.addActionListener(new java.awt.event.ActionListener() {
@@ -658,9 +659,24 @@ public class Kasir extends javax.swing.JFrame {
         subtotalTextField.setText("");
     }                                           
 
-    private void bayarButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
-
-    }                                           
+    private void bayarButtonActionPerformed(java.awt.event.ActionEvent evt) {  
+        if (cashFieldText.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Masukkan Cash Duit Anda Dulu!");
+        }
+        else if (totalFieldText.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Anda Masih Belum Mengtotalkan Pembelian!");
+        }
+        else {
+            int cash = outSubtotal = Integer.parseInt(cashFieldText.getText());
+            if (cash<jumlah){
+                JOptionPane.showMessageDialog(null, "Duit Anda Tidak Cukup!");
+            }
+            else{
+                int kembali = cash - jumlah;
+                kembalianFieldText.setText(String.valueOf(kembali));
+            }
+        }
+    }
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {                                              
         createFolder();
