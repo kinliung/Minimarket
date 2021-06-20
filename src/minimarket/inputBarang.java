@@ -32,6 +32,7 @@ public class inputBarang extends javax.swing.JFrame {
                 ln++;
             }
             System.out.println("Number of lines: "+ln);
+            raf.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Minimarket.notepad.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -53,6 +54,7 @@ public class inputBarang extends javax.swing.JFrame {
             raf.writeBytes("Tanggal Masuk : "+tanggalMsk+"\r\n");
             raf.writeBytes("Tanggal Kadaluarsa : "+tanggalKdlrsa+"\r\n");
             raf.writeBytes("\r\n");
+            raf.close();
             }
         catch (FileNotFoundException ex) {
             Logger.getLogger(Minimarket.notepad.class.getName()).log(Level.SEVERE, null, ex);
@@ -82,6 +84,7 @@ public class inputBarang extends javax.swing.JFrame {
                     raf.readLine();
                 }
             }
+            raf.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Minimarket.notepad.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {

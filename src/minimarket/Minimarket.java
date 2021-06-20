@@ -44,13 +44,17 @@ public class Minimarket extends JFrame {
         try {
             FileReader fr = new FileReader(f+namaFile);
             System.out.println("File Exist!");
+            fr.close();
         } catch (FileNotFoundException ex) {
             try {
                 FileWriter fw = new FileWriter(f+namaFile);
                 System.out.println("File Created!");
+                fw.close();
             } catch (IOException ex1) {
                 Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex1);
             }
+        } catch (IOException ex) {
+            Logger.getLogger(Minimarket.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }

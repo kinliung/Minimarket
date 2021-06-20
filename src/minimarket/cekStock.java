@@ -53,8 +53,7 @@ public class cekStock extends javax.swing.JFrame {
             }
         } catch (IOException ex) {
             Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+        }   
     }
     
     void addData(String nama, String alamat, String usr, String pass, String namaFile){
@@ -100,7 +99,7 @@ public class cekStock extends javax.swing.JFrame {
                     raf.readLine();
                 }
             }
-            
+            raf.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -122,6 +121,7 @@ public class cekStock extends javax.swing.JFrame {
                     raf.readLine();
                 }
             }
+            raf.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -163,10 +163,6 @@ public class cekStock extends javax.swing.JFrame {
             pw.close();
             bw.close();
             fw.close();
-            //oldFile.delete();
-            //oldFile.delete();
-            //File dump = new File("c:\\minimarket\\data\\DataStok.txt");
-            //newFile.renameTo(dump);
         }
         catch (Exception e) {
             Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, e);
@@ -414,7 +410,7 @@ public class cekStock extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setTitle("Manager - Cek Stok Barang");
         addComboBox();
-        
+        checkStock("\\DataStok.txt");
     }       
     
     
@@ -437,11 +433,6 @@ public class cekStock extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "Pastikan Tidak Ada Field Yang Kosong!");
             }
         else{
-            Minimarket minimarket = new Minimarket();
-            minimarket.createFolder();
-            minimarket.readFile("\\DataStok.txt");
-            countLines2("\\DataStok.txt");
-            
             String filepath = "c:\\minimarket\\data\\DataStok.txt";
             String oldNama = "Nama Barang : "+selectedComboBox;
             String newHarga = "Harga : "+hargaTextField.getText();
@@ -452,14 +443,8 @@ public class cekStock extends javax.swing.JFrame {
             cekStock cS = new cekStock();
             cS.editRecord(oldNama,newHarga,newStok,newTgglMsk,newTgglKdlrsa);
             gantiFile();
-            //File oldFile = new File("c:\\minimarket\\data\\DataStok.txt");
-            //oldFile.delete();
-            //File dump = new File("c:\\minimarket\\data\\DataStok.txt");
-            //File newFile = new File("c:\\minimarket\\data\\tmp.txt");
-            //newFile.renameTo(dump);
-            //addComboBox();
-            //refreshButtonActionPerformed();
-            
+            JOptionPane.showMessageDialog(null, "Update Berhasil!");
+            checkStock("\\DataStok.txt");
         }  
     }                                     
 
@@ -481,7 +466,8 @@ public class cekStock extends javax.swing.JFrame {
         readFile("\\DataStok.txt");
         countLines2("\\DataStok.txt");
         checkStock("\\DataStok.txt");
-    }                                             
+    }      
+    
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
