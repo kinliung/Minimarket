@@ -674,6 +674,9 @@ public class Kasir extends javax.swing.JFrame {
             else{
                 int kembali = cash - jumlah;
                 kembalianFieldText.setText(String.valueOf(kembali));
+                File oldFile = new File("c:\\minimarket\\data\\tempLogJualan.txt");
+                oldFile.delete();
+                System.out.println("sukses");
             }
         }
     }
