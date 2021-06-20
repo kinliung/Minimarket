@@ -227,10 +227,7 @@ public class Kasir extends javax.swing.JFrame {
             Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NullPointerException ex){
-            System.out.print("Caught the NullPointerException");
         }
-        
     }
     
     
@@ -673,9 +670,10 @@ public class Kasir extends javax.swing.JFrame {
             }
             else{
                 int kembali = cash - jumlah;
+                jumlah = 0;
                 kembalianFieldText.setText(String.valueOf(kembali));
-                File oldFile = new File("c:\\minimarket\\data\\tempLogJualan.txt");
-                oldFile.delete();
+                File test = new File("c:\\minimarket\\data\\tempLogJualan.txt");
+                test.delete();
                 System.out.println("sukses");
             }
         }
@@ -712,7 +710,9 @@ public class Kasir extends javax.swing.JFrame {
                 String newStok = "Stock : "+stokAkhir;
                 editRecord(oldNama,newStok);
                 gantiFile();
+                countLines2("\\tempLogJualan.txt");
                 checkLogJual("\\tempLogJualan.txt");
+                countLines2("\\DataStok.txt");
                 checkStock("\\DataStok.txt");
                 jumlah += outSubtotal;
                 jumlahTextField.setText("");
