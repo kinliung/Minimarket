@@ -628,7 +628,6 @@ class Manager extends JFrame implements ActionListener {
             loginFrame.setVisible(false);
             cekStock cekstk = new cekStock();
             cekstk.setVisible(true);
-            cekstk.addComboBox();
         }
         else if (ae.getSource() == logOut){
             loginFrame.setVisible(false);
