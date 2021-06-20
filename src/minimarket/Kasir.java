@@ -43,7 +43,8 @@ public class Kasir extends javax.swing.JFrame {
     private static String nama;
     String hasilakhir;
     String jenisBarang, namaBarang, tanggalMasuk, selectedComboBox, oldNama;
-    int ln, hargaBarang, stokBarang, jumlahPembelian, stokTersedia, price;
+    int ln, hargaBarang, stokBarang, jumlahPembelian, stokTersedia, price, outSubtotal, totalharga;
+    int jumlah;
     
     int total;
     
@@ -119,6 +120,56 @@ public class Kasir extends javax.swing.JFrame {
     }
     
     
+    public void editRecord(String oldNama, String newStok){
+        File oldFile = new File("c:\\minimarket\\data\\DataStok.txt");
+        File newFile = new File("c:\\minimarket\\data\\tmp.txt");
+        String cekData;
+        try{
+            FileWriter fw = new FileWriter("c:\\minimarket\\data\\tmp.txt",true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            countLines2("\\DataStok.txt");
+            RandomAccessFile raf = new RandomAccessFile("c:\\minimarket\\data\\DataStok.txt", "rw");
+            for(int i=0; i<(ln-2); i++){
+                cekData = raf.readLine();
+                if(cekData.equals(oldNama)){
+                    pw.println(cekData);
+                    cekData = raf.readLine();
+                    pw.println(cekData);
+                    pw.println(newStok);
+                    raf.readLine();
+                    i+=2;
+                }
+                else{
+                    pw.println(cekData);
+                } 
+            }
+            pw.println();
+            pw.flush();
+            raf.close();
+            pw.close();
+            bw.close();
+            fw.close();
+        }
+        catch (Exception e) {
+            Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+    
+    
+    void gantiFile(){
+        try{
+            File oldFile = new File("c:\\minimarket\\data\\DataStok.txt");
+            oldFile.delete();
+            File dump = new File("c:\\minimarket\\data\\DataStok.txt");
+            File newFile = new File("c:\\minimarket\\data\\tmp.txt");
+            newFile.renameTo(dump);
+        }
+        catch(Exception e){
+            System.out.println("gagal");
+        }
+    }
+    
     void checkStock(String namaFile){
         try {
             DefaultTableModel model = (DefaultTableModel) tabelBarang.getModel();
@@ -148,6 +199,38 @@ public class Kasir extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(cekStock.notepad.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    void checkLogJual(String namaFile){
+        try {
+            DefaultTableModel model = (DefaultTableModel) tabelDaftar.getModel();
+            int rowCount = model.getRowCount();
+            //Remove rows one by one from the end of the table
+            for (int i = rowCount - 1; i >= 0; i--) {
+                model.removeRow(i);
+            }
+            RandomAccessFile raf = new RandomAccessFile(f+namaFile, "rw");
+            for(int i=1; i<=ln; i+=4){
+                namaBarang = raf.readLine().substring(7);
+                stokBarang = Integer.parseInt(raf.readLine().substring(9));
+                totalharga = Integer.parseInt(raf.readLine().substring(11));
+                model.addRow(new Object[]{namaBarang, stokBarang, totalharga});
+                if (i==(ln-4)){
+                    break;
+                }
+                for(int k=1; k<=1; k++){
+                    raf.readLine();
+                }
+            }
+            raf.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullPointerException ex){
+            System.out.print("Caught the NullPointerException");
+        }
+        
     }
     
     
@@ -194,6 +277,28 @@ public class Kasir extends javax.swing.JFrame {
                     subtotalTextField.setText("0");
                 }
             }
+    
+    
+    void addData2(String namaBrg, int jumlahbrg, int subtotal, String namaFile){
+        try {
+            RandomAccessFile raf = new RandomAccessFile(f+namaFile, "rw");
+            for(int i=0; i<ln; i++){
+                raf.readLine();
+            }
+            raf.writeBytes("Nama : "+namaBrg+"\r\n");
+            raf.writeBytes("Jumlah : "+jumlahbrg+"\r\n");
+            raf.writeBytes("Subtotal : "+subtotal+"\r\n");
+            raf.writeBytes("\r\n");
+            raf.close();
+            }
+        catch (FileNotFoundException ex) {
+            Logger.getLogger(Minimarket.notepad.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Minimarket.notepad.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -565,25 +670,40 @@ public class Kasir extends javax.swing.JFrame {
     }                                             
 
     private void tambahButtonActionPerformed(java.awt.event.ActionEvent evt) {  
+        Minimarket minimarket = new Minimarket();
+        minimarket.createFolder();
+        minimarket.readFile("\\tempLogJualan.txt");
+        String stokAkhir;
         if(jumlahTextField.getText().isEmpty()){
             JOptionPane.showMessageDialog(null, "Masukkan Jumlah Barang Yang Ingin Dibeli!");
         }
         else{
             jumlahPembelian = Integer.parseInt(jumlahTextField.getText());
+            outSubtotal = Integer.parseInt(subtotalTextField.getText());
             oldNama = "Nama Barang : "+selectedComboBox;
+            //System.out.println(oldNama);
             checkData2(oldNama,"\\DataStok.txt");
-            
+            stokAkhir = String.valueOf(stokTersedia-jumlahPembelian);
             if(jumlahPembelian>stokTersedia){
                 JOptionPane.showMessageDialog(null, "Jumlah Barang Yang ingin Anda Beli Melibihi Stok Yang Tersedia!");
             }
             else{
-                
+                addData2(selectedComboBox, jumlahPembelian, outSubtotal, "\\tempLogJualan.txt");
+                String filepath = "c:\\minimarket\\data\\DataStok.txt";
+                String newStok = "Stock : "+stokAkhir;
+                editRecord(oldNama,newStok);
+                gantiFile();
+                checkLogJual("\\tempLogJualan.txt");
+                checkStock("\\DataStok.txt");
+                jumlah += outSubtotal;
+                jumlahTextField.setText("");
+                subtotalTextField.setText("");
             }
         }
     }                                            
 
     private void totalButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
-
+        totalFieldText.setText(String.valueOf(jumlah));
         
     }                                           
 
