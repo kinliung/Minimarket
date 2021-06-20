@@ -382,6 +382,7 @@ public class Kasir extends javax.swing.JFrame {
         jLabel5.setText("SubTotal");
         subtotalTextField.setEditable(false);
         totalFieldText.setEditable(false);
+        kembalianFieldText.setEditable(false);
 
         clearButton.setText("Clear");
         clearButton.addActionListener(new java.awt.event.ActionListener() {
@@ -698,7 +699,6 @@ public class Kasir extends javax.swing.JFrame {
             jumlahPembelian = Integer.parseInt(jumlahTextField.getText());
             outSubtotal = Integer.parseInt(subtotalTextField.getText());
             oldNama = "Nama Barang : "+selectedComboBox;
-            //System.out.println(oldNama);
             checkData2(oldNama,"\\DataStok.txt");
             stokAkhir = String.valueOf(stokTersedia-jumlahPembelian);
             if(jumlahPembelian>stokTersedia){
@@ -717,6 +717,8 @@ public class Kasir extends javax.swing.JFrame {
                 jumlah += outSubtotal;
                 jumlahTextField.setText("");
                 subtotalTextField.setText("");
+                totalFieldText.setText("");
+                kembalianFieldText.setText("");
             }
         }
     }                                            
