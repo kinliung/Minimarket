@@ -855,21 +855,42 @@ public class Kasir extends javax.swing.JFrame {
     }
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {                                           
-        // TODO add your handling code here:
-        selectedComboBox = jComboBox1.getSelectedItem().toString();
-        oldNama = "Nama Barang : "+selectedComboBox;
-        checkData2(oldNama,"\\DataStok.txt");
-        calcAndSetTotal();
+        File checkEmptyFile = new File("c:\\minimarket\\data\\DataStok.txt");
+        if (checkEmptyFile.length() == 0) {
+            DefaultTableModel model = (DefaultTableModel) tabelBarang.getModel();
+            int rowCount = model.getRowCount();
+            //Remove rows one by one from the end of the table
+            for (int i = rowCount - 1; i >= 0; i--){
+                model.removeRow(i);
+            }
+        }
+        else{
+            selectedComboBox = jComboBox1.getSelectedItem().toString();
+            oldNama = "Nama Barang : "+selectedComboBox;
+            checkData2(oldNama,"\\DataStok.txt");
+            calcAndSetTotal();
+        }
     }                                          
 
     private void jComboBox1PopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
-        selectedComboBox = jComboBox1.getSelectedItem().toString();    
-        try{
-            jumlahTextField.setText("1");
+        File checkEmptyFile = new File("c:\\minimarket\\data\\DataStok.txt");
+        if (checkEmptyFile.length() == 0) {
+            DefaultTableModel model = (DefaultTableModel) tabelBarang.getModel();
+            int rowCount = model.getRowCount();
+            //Remove rows one by one from the end of the table
+            for (int i = rowCount - 1; i >= 0; i--){
+                model.removeRow(i);
+            }
         }
-        catch(Exception e){
+        else{
+            selectedComboBox = jComboBox1.getSelectedItem().toString();
+            try{
+                jumlahTextField.setText("1");
+            }
+            catch(Exception e){
+            }
         }
-    }                                                     
+    }                                                 
 
     public static void main(String args[]) {
         try {
