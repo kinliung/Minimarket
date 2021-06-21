@@ -832,7 +832,6 @@ public class Kasir extends javax.swing.JFrame {
         readFile("\\DataStok.txt");
         countLines2("\\DataStok.txt");
         checkStock("\\DataStok.txt");
-        System.out.println("OK");
     }                                             
 
     private void tambahBtnActionPerformed(java.awt.event.ActionEvent evt) {
