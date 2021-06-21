@@ -150,6 +150,10 @@ public class Kasir extends javax.swing.JFrame {
         }
     }
     
+    
+    
+    
+    
     public void editRecord2(){
         File oldFile1 = new File("c:\\minimarket\\data\\DataStok.txt");
         File oldFile2 = new File("c:\\minimarket\\data\\tempLogJualan.txt");
@@ -157,28 +161,49 @@ public class Kasir extends javax.swing.JFrame {
         c2 = ln;
         File newFile = new File("c:\\minimarket\\data\\tmp2.txt");
         String cekData1 = ""; String cekData2 = ""; String cekData3 = "";
-        int jumlah = 0; int jumlah2 = 0; int total = 0; int salah=0;
+        int jumlah = 0; int jumlah2 = 0; int jumlah3 = 0; int total = 0; int salah=1;
         try{
             FileWriter fw = new FileWriter("c:\\minimarket\\data\\tmp2.txt",true);
             BufferedWriter bw = new BufferedWriter(fw);
             PrintWriter pw = new PrintWriter(bw);
             RandomAccessFile raf = new RandomAccessFile("c:\\minimarket\\data\\DataStok.txt", "rw");
             for(int i=1; i<(c1-3); i+=7){
+                int p = c2-3;
                 cekData1 = raf.readLine();
                 pw.println(cekData1);
                 cekData1 = raf.readLine();
                 RandomAccessFile raf2 = new RandomAccessFile("c:\\minimarket\\data\\tempLogJualan.txt", "rw");
-                for(int k=1; k<(c2-3); k+=4){
+                for(int j=1; j<(c2-3); j+=4){
+                    p-=4;
                     cekData2 = "Nama Barang : "+raf2.readLine().substring(7);
                     if(cekData1.equals(cekData2)){
-                        pw.println(cekData2);
+                        cekData2 = raf2.readLine().substring(9);
+                        jumlah2 = Integer.parseInt(cekData2);
+                        jumlah3 += jumlah2;
+                        raf2.readLine();
+                        raf2.readLine();
+                        for(int k=1; k<p; k+=4){
+                            cekData2 = "Nama Barang : "+raf2.readLine().substring(7);
+                            if(cekData1.equals(cekData2)){
+                                cekData2 = raf2.readLine().substring(9);
+                                jumlah2 = Integer.parseInt(cekData2);
+                                jumlah3 += jumlah2;
+                                raf2.readLine();
+                                raf2.readLine();
+                            }
+                            else{
+                                raf2.readLine();
+                                raf2.readLine();
+                                raf2.readLine();
+                            }
+                        }
+                        pw.println(cekData1);
                         cekData1 = raf.readLine();
                         pw.println(cekData1);
                         cekData1 = raf.readLine().substring(8);
                         jumlah = Integer.parseInt(cekData1);
-                        cekData2 = raf2.readLine().substring(9);
-                        jumlah2 = Integer.parseInt(cekData2);
-                        total = jumlah + jumlah2;
+                        total = jumlah + jumlah3;
+                        jumlah3 = 0;
                         pw.println("Stock : "+total);
                         cekData1 = raf.readLine();
                         pw.println(cekData1);
@@ -186,26 +211,58 @@ public class Kasir extends javax.swing.JFrame {
                         pw.println(cekData1);
                         cekData1 = raf.readLine();
                         pw.println(cekData1);
-                        raf2.readLine();
-                        raf2.readLine();
-                        salah = 0;
+                        raf2.close();
                         break;
                     }
-                    else {
+                    else{
                         raf2.readLine();
                         raf2.readLine();
                         raf2.readLine();
-                        salah = 1;
+                        for(int m=1; m<p; m+=4){
+                            cekData2 = "Nama Barang : "+raf2.readLine().substring(7);
+                            if(cekData1.equals(cekData2)){
+                                cekData2 = raf2.readLine().substring(9);
+                                jumlah2 = Integer.parseInt(cekData2);
+                                jumlah3 += jumlah2;
+                                raf2.readLine();
+                                raf2.readLine();
+                                salah = 0;
+                            }
+                            else{
+                                raf2.readLine();
+                                raf2.readLine();
+                                raf2.readLine();
+                            }
+                        }
+                        if (salah == 0){
+                            pw.println(cekData1);
+                            cekData1 = raf.readLine();
+                            pw.println(cekData1);
+                            cekData1 = raf.readLine().substring(8);
+                            jumlah = Integer.parseInt(cekData1);
+                            total = jumlah + jumlah3;
+                            jumlah3 = 0;
+                            pw.println("Stock : "+total);
+                            cekData1 = raf.readLine();
+                            pw.println(cekData1);
+                            cekData1 = raf.readLine();
+                            pw.println(cekData1);
+                            cekData1 = raf.readLine();
+                            pw.println(cekData1);
+                            raf2.close();
+                            break;
+                        }
+                        else{
+                            pw.println(cekData1);
+                            for(int q=1; q<=5; q++){
+                                cekData1 = raf.readLine();
+                                pw.println(cekData1);
+                            }
+                            raf2.close();
+                            break;
+                        }
                     }
                 }
-                if(salah == 1){
-                    pw.println(cekData1);
-                    for(int j=1; j<=5; j++){
-                    cekData1 = raf.readLine();
-                    pw.println(cekData1);
-                    }
-                }
-                raf2.close();
             }
             pw.flush();
             raf.close();
@@ -217,6 +274,11 @@ public class Kasir extends javax.swing.JFrame {
             Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, e);
         }
     }
+    
+    
+    
+    
+    
     
     void gantiFile(String namaFile){
         try{
@@ -770,6 +832,7 @@ public class Kasir extends javax.swing.JFrame {
         readFile("\\DataStok.txt");
         countLines2("\\DataStok.txt");
         checkStock("\\DataStok.txt");
+        System.out.println("OK");
     }                                             
 
     private void tambahBtnActionPerformed(java.awt.event.ActionEvent evt) {
