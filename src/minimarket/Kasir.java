@@ -32,18 +32,14 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
-/**
- *
- * @author Fahrul Ramadhan
- */
 public class Kasir extends javax.swing.JFrame {
-
 
     File f = new File("C:\\minimarket\\data");
     private static String nama;
     String hasilakhir;
     String jenisBarang, namaBarang, tanggalMasuk, selectedComboBox, oldNama;
     int ln, hargaBarang, stokBarang, jumlahPembelian, stokTersedia, price, outSubtotal, totalharga;
+    int c1 = 0; int c2 = 0;
     int jumlah;
     
     int total;
@@ -94,7 +90,6 @@ public class Kasir extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(Minimarket.notepad.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
     
     void checkCombo(String namaFile){
@@ -118,7 +113,6 @@ public class Kasir extends javax.swing.JFrame {
             Logger.getLogger(cekStock.notepad.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
     
     public void editRecord(String oldNama, String newStok){
         File oldFile = new File("c:\\minimarket\\data\\DataStok.txt");
@@ -156,13 +150,80 @@ public class Kasir extends javax.swing.JFrame {
         }
     }
     
-    
-    void gantiFile(){
+    public void editRecord2(){
+        File oldFile1 = new File("c:\\minimarket\\data\\DataStok.txt");
+        File oldFile2 = new File("c:\\minimarket\\data\\tempLogJualan.txt");
+        countLines2("\\tempLogJualan.txt"); //WARNING : ini bisa create file secara otomatis
+        c2 = ln;
+        File newFile = new File("c:\\minimarket\\data\\tmp2.txt");
+        String cekData1 = ""; String cekData2 = ""; String cekData3 = "";
+        int jumlah = 0; int jumlah2 = 0; int total = 0; int salah=0;
         try{
-            File oldFile = new File("c:\\minimarket\\data\\DataStok.txt");
+            FileWriter fw = new FileWriter("c:\\minimarket\\data\\tmp2.txt",true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            RandomAccessFile raf = new RandomAccessFile("c:\\minimarket\\data\\DataStok.txt", "rw");
+            for(int i=1; i<(c1-3); i+=7){
+                cekData1 = raf.readLine();
+                pw.println(cekData1);
+                cekData1 = raf.readLine();
+                RandomAccessFile raf2 = new RandomAccessFile("c:\\minimarket\\data\\tempLogJualan.txt", "rw");
+                for(int k=1; k<(c2-3); k+=4){
+                    cekData2 = "Nama Barang : "+raf2.readLine().substring(7);
+                    if(cekData1.equals(cekData2)){
+                        pw.println(cekData2);
+                        cekData1 = raf.readLine();
+                        pw.println(cekData1);
+                        cekData1 = raf.readLine().substring(8);
+                        jumlah = Integer.parseInt(cekData1);
+                        cekData2 = raf2.readLine().substring(9);
+                        jumlah2 = Integer.parseInt(cekData2);
+                        total = jumlah + jumlah2;
+                        pw.println("Stock : "+total);
+                        cekData1 = raf.readLine();
+                        pw.println(cekData1);
+                        cekData1 = raf.readLine();
+                        pw.println(cekData1);
+                        cekData1 = raf.readLine();
+                        pw.println(cekData1);
+                        raf2.readLine();
+                        raf2.readLine();
+                        salah = 0;
+                        break;
+                    }
+                    else {
+                        raf2.readLine();
+                        raf2.readLine();
+                        raf2.readLine();
+                        salah = 1;
+                    }
+                }
+                if(salah == 1){
+                    pw.println(cekData1);
+                    for(int j=1; j<=5; j++){
+                    cekData1 = raf.readLine();
+                    pw.println(cekData1);
+                    }
+                }
+                raf2.close();
+            }
+            pw.flush();
+            raf.close();
+            pw.close();
+            bw.close();
+            fw.close();
+        }
+        catch (Exception e) {
+            Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+    
+    void gantiFile(String namaFile){
+        try{
+            File oldFile = new File(f+"\\DataStok.txt");
             oldFile.delete();
-            File dump = new File("c:\\minimarket\\data\\DataStok.txt");
-            File newFile = new File("c:\\minimarket\\data\\tmp.txt");
+            File dump = new File(f+"\\DataStok.txt");
+            File newFile = new File(f+namaFile);
             newFile.renameTo(dump);
         }
         catch(Exception e){
@@ -203,33 +264,43 @@ public class Kasir extends javax.swing.JFrame {
     
     void checkLogJual(String namaFile){
         try {
-            DefaultTableModel model = (DefaultTableModel) tabelDaftar.getModel();
-            int rowCount = model.getRowCount();
-            //Remove rows one by one from the end of the table
-            for (int i = rowCount - 1; i >= 0; i--) {
-                model.removeRow(i);
-            }
-            RandomAccessFile raf = new RandomAccessFile(f+namaFile, "rw");
-            for(int i=1; i<=ln; i+=4){
-                namaBarang = raf.readLine().substring(7);
-                stokBarang = Integer.parseInt(raf.readLine().substring(9));
-                totalharga = Integer.parseInt(raf.readLine().substring(11));
-                model.addRow(new Object[]{namaBarang, stokBarang, totalharga});
-                if (i==(ln-4)){
-                    break;
-                }
-                for(int k=1; k<=1; k++){
-                    raf.readLine();
+            File checkEmptyFile = new File(f+namaFile);
+            if (checkEmptyFile.length() == 0) {
+                DefaultTableModel model = (DefaultTableModel) tabelDaftar.getModel();
+                int rowCount = model.getRowCount();
+                //Remove rows one by one from the end of the table
+                for (int i = rowCount - 1; i >= 0; i--){
+                    model.removeRow(i);
                 }
             }
-            raf.close();
+            else{
+                DefaultTableModel model = (DefaultTableModel) tabelDaftar.getModel();
+                int rowCount = model.getRowCount();
+                //Remove rows one by one from the end of the table
+                for (int i = rowCount - 1; i >= 0; i--) {
+                    model.removeRow(i);
+                }
+                RandomAccessFile raf = new RandomAccessFile(f+namaFile, "rw");
+                for(int i=1; i<=ln; i+=4){
+                    namaBarang = raf.readLine().substring(7);
+                    stokBarang = Integer.parseInt(raf.readLine().substring(9));
+                    totalharga = Integer.parseInt(raf.readLine().substring(11));
+                    model.addRow(new Object[]{namaBarang, stokBarang, totalharga});
+                    if (i==(ln-4)){
+                        break;
+                    }
+                    for(int k=1; k<=1; k++){
+                        raf.readLine();
+                    }
+                }
+                raf.close();
+            }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
     
     int checkData2(String namaBrg, String namaFile){
         int nilai = 0;
@@ -262,7 +333,6 @@ public class Kasir extends javax.swing.JFrame {
         return nilai;
     }
     
-    
     void calcAndSetTotal() {
                 int sum = price;
 
@@ -274,7 +344,6 @@ public class Kasir extends javax.swing.JFrame {
                     subtotalTextField.setText("0");
                 }
             }
-    
     
     void addData2(String namaBrg, int jumlahbrg, int subtotal, String namaFile){
         try {
@@ -295,15 +364,7 @@ public class Kasir extends javax.swing.JFrame {
         }
     }
     
-    
-    
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+    @SuppressWarnings("unhecked")                
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -315,8 +376,8 @@ public class Kasir extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         subtotalTextField = new javax.swing.JTextField();
-        clearButton = new javax.swing.JButton();
-        tambahButton = new javax.swing.JButton();
+        clearBtn = new javax.swing.JButton();
+        tambahBtn = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tabelDaftar = new javax.swing.JTable();
@@ -325,29 +386,13 @@ public class Kasir extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         cashFieldText = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        bayarButton = new javax.swing.JButton();
+        ByrButton = new javax.swing.JButton();
         kembalianFieldText = new javax.swing.JTextField();
         refreshButton = new javax.swing.JButton();
-        totalButton = new javax.swing.JButton();
+        totalBtn = new javax.swing.JButton();
+        btnLogout = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
-        
-        jComboBox1.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
-            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
-            }
-            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
-                jComboBox1PopupMenuWillBecomeInvisible(evt);
-            }
-            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
-            }
-        });
-        
-        
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
-            }
-        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -359,9 +404,17 @@ public class Kasir extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Jenis", "Nama", "Stok", "Harga", "Tggl Masuk"
+                "Jenis", "Nama", "Stok", "Harga", "Tgl Masuk"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tabelBarang.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tabelBarangMouseClicked(evt);
@@ -369,7 +422,7 @@ public class Kasir extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tabelBarang);
 
-        jLabel2.setText("Jumlah");
+        jLabel2.setText("Nama");
 
         jumlahTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -377,24 +430,24 @@ public class Kasir extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setText("Nama");
+        jLabel3.setText("Jumlah");
 
         jLabel5.setText("SubTotal");
         subtotalTextField.setEditable(false);
         totalFieldText.setEditable(false);
         kembalianFieldText.setEditable(false);
 
-        clearButton.setText("Clear");
-        clearButton.addActionListener(new java.awt.event.ActionListener() {
+        clearBtn.setText("Clear");
+        clearBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                clearButtonActionPerformed(evt);
+                clearBtnActionPerformed(evt);
             }
         });
 
-        tambahButton.setText("Tambah");
-        tambahButton.addActionListener(new java.awt.event.ActionListener() {
+        tambahBtn.setText("Tambah");
+        tambahBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tambahButtonActionPerformed(evt);
+                tambahBtnActionPerformed(evt);
             }
         });
 
@@ -407,19 +460,41 @@ public class Kasir extends javax.swing.JFrame {
             new String [] {
                 "Nama", "Jumlah", "Subtotal"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane2.setViewportView(tabelDaftar);
 
         jLabel7.setText("Total Tagihan");
+
+        totalFieldText.setText("0");
+        totalFieldText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                totalFieldTextActionPerformed(evt);
+            }
+        });
 
         jLabel8.setText("Cash");
 
         jLabel9.setText("Kembali");
 
-        bayarButton.setText("Bayar");
-        bayarButton.addActionListener(new java.awt.event.ActionListener() {
+        ByrButton.setText("Bayar");
+        ByrButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bayarButtonActionPerformed(evt);
+                ByrButtonActionPerformed(evt);
             }
         });
 
@@ -430,10 +505,40 @@ public class Kasir extends javax.swing.JFrame {
             }
         });
 
-        totalButton.setText("Totalkan");
-        totalButton.addActionListener(new java.awt.event.ActionListener() {
+        totalBtn.setText("Totalkan");
+        totalBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                totalButtonActionPerformed(evt);
+                totalBtnActionPerformed(evt);
+            }
+        });
+
+        btnLogout.setText("Logout");
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
+
+        btnCancel.setText("Cancel");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
+        
+        jComboBox1.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                jComboBox1PopupMenuWillBecomeVisible(evt);
+            }
+        });
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {}));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
             }
         });
 
@@ -442,20 +547,6 @@ public class Kasir extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(348, 348, 348)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addGap(21, 21, 21)
-                        .addComponent(kembalianFieldText))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addGap(38, 38, 38)
-                        .addComponent(cashFieldText, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)))
-                .addGap(18, 18, 18)
-                .addComponent(bayarButton)
-                .addGap(25, 25, 25))
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -463,88 +554,112 @@ public class Kasir extends javax.swing.JFrame {
                                 .addGap(290, 290, 290)
                                 .addComponent(jLabel1))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel6))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(23, 23, 23)
-                                .addComponent(refreshButton))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel7)
-                                .addGap(18, 18, 18)
-                                .addComponent(totalFieldText, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(totalButton)))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(refreshButton)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnLogout))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(jScrollPane2)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(clearButton)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(tambahButton)
-                                        .addGap(16, 16, 16))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel2)
                                             .addComponent(jLabel3)
-                                            .addComponent(jLabel5)
-                                            .addComponent(jLabel2))
+                                            .addComponent(jLabel5))
                                         .addGap(23, 23, 23)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                             .addComponent(jumlahTextField)
                                             .addComponent(subtotalTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))))
+                                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(clearBtn)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
+                                        .addComponent(tambahBtn)
+                                        .addGap(16, 16, 16))))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(btnCancel)
+                                    .addComponent(jLabel7))
+                                .addGap(18, 18, 18)
+                                .addComponent(totalFieldText, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(totalBtn)
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel9)
+                                    .addComponent(jLabel8))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(cashFieldText, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
+                                    .addComponent(kembalianFieldText))
+                                .addGap(38, 38, 38)
+                                .addComponent(ByrButton)
+                                .addGap(25, 25, 25)))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addGap(2, 2, 2)
-                .addComponent(refreshButton)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(2, 2, 2)
+                        .addComponent(refreshButton))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnLogout)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel6))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
+                            .addComponent(jLabel2)
                             .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jumlahTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
+                            .addComponent(jLabel3)
+                            .addComponent(jumlahTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
                             .addComponent(subtotalTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(clearButton)
-                            .addComponent(tambahButton))))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel6)
+                            .addComponent(clearBtn)
+                            .addComponent(tambahBtn))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(38, 38, 38)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(cashFieldText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bayarButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(totalFieldText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(totalButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(kembalianFieldText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(38, 38, 38)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(cashFieldText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ByrButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel9)
+                            .addComponent(kembalianFieldText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(13, 13, 13)
+                        .addComponent(btnCancel)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(totalFieldText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(totalBtn))))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -559,7 +674,6 @@ public class Kasir extends javax.swing.JFrame {
         );
 
         pack();
-        // Centering the screen on the desktop
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = getSize();
         setLocation(((screenSize.width - frameSize.width) / 2),
@@ -606,45 +720,16 @@ public class Kasir extends javax.swing.JFrame {
         ((AbstractDocument) (jumlahTextField.getDocument())).setDocumentFilter(df);
         
         jumlahTextField.setText("1");
- 
-    }          
-    
-    
-    
-    
+    }                      
+
     void addComboBox(){
         createFolder();
         readFile("\\DataStok.txt");
         countLines2("\\DataStok.txt");
         checkCombo("\\DataStok.txt");
     }
-    
-    
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt){
-        selectedComboBox = jComboBox1.getSelectedItem().toString();
-        oldNama = "Nama Barang : "+selectedComboBox;
-        checkData2(oldNama,"\\DataStok.txt");
-        calcAndSetTotal();
-        
-        
-    }
-    
-    private void jComboBox1PopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {                                                        
-        selectedComboBox = jComboBox1.getSelectedItem().toString();
-        
-        try{
-            jumlahTextField.setText("1");
-        }
-        catch(Exception e){
-            
-        }
-    } 
-    
-    
-
     private void tabelBarangMouseClicked(java.awt.event.MouseEvent evt) {                                         
         // TODO add your handling code here:
-        
     }                                        
 
     private void jumlahTextFieldActionPerformed(java.awt.event.ActionEvent evt) {                                                
@@ -652,12 +737,13 @@ public class Kasir extends javax.swing.JFrame {
 
     }                                               
 
-    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {
         jumlahTextField.setText("");
         subtotalTextField.setText("");
-    }                                           
+    }                                        
 
-    private void bayarButtonActionPerformed(java.awt.event.ActionEvent evt) {  
+    private void ByrButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
         if (cashFieldText.getText().isEmpty()){
             JOptionPane.showMessageDialog(null, "Masukkan Cash Duit Anda Dulu!");
         }
@@ -675,19 +761,18 @@ public class Kasir extends javax.swing.JFrame {
                 kembalianFieldText.setText(String.valueOf(kembali));
                 File test = new File("c:\\minimarket\\data\\tempLogJualan.txt");
                 test.delete();
-                System.out.println("sukses");
             }
         }
-    }
+    }                                         
 
-    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {                                              
+    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {
         createFolder();
         readFile("\\DataStok.txt");
         countLines2("\\DataStok.txt");
         checkStock("\\DataStok.txt");
     }                                             
 
-    private void tambahButtonActionPerformed(java.awt.event.ActionEvent evt) {  
+    private void tambahBtnActionPerformed(java.awt.event.ActionEvent evt) {
         Minimarket minimarket = new Minimarket();
         minimarket.createFolder();
         minimarket.readFile("\\tempLogJualan.txt");
@@ -706,10 +791,11 @@ public class Kasir extends javax.swing.JFrame {
             }
             else{
                 addData2(selectedComboBox, jumlahPembelian, outSubtotal, "\\tempLogJualan.txt");
+                addData2(selectedComboBox, jumlahPembelian, outSubtotal, "\\transaksiJualTercatat.txt");
                 String filepath = "c:\\minimarket\\data\\DataStok.txt";
                 String newStok = "Stock : "+stokAkhir;
                 editRecord(oldNama,newStok);
-                gantiFile();
+                gantiFile("\\tmp.txt");
                 countLines2("\\tempLogJualan.txt");
                 checkLogJual("\\tempLogJualan.txt");
                 countLines2("\\DataStok.txt");
@@ -721,16 +807,16 @@ public class Kasir extends javax.swing.JFrame {
                 kembalianFieldText.setText("");
             }
         }
-    }                                            
-
-    private void totalButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
-        totalFieldText.setText(String.valueOf(jumlah));
-        
-    }                                           
-
-    private void textTotalActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        // TODO add your handling code here:
     }                                         
+
+    private void totalBtnActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        // TODO add your handling code here:
+        totalFieldText.setText(String.valueOf(jumlah));
+    }                                        
+
+    private void totalFieldTextActionPerformed(java.awt.event.ActionEvent evt) {                                               
+        // TODO add your handling code here:
+    }                                              
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {                                          
         // TODO add your handling code here:
@@ -739,15 +825,53 @@ public class Kasir extends javax.swing.JFrame {
         setVisible(false);
     }                                         
 
-    /**
-     * @param args the command line arguments
-     */
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {
+        File checkEmptyFile = new File("c:\\minimarket\\data\\tempLogJualan.txt");
+        if (checkEmptyFile.length() == 0) {
+            DefaultTableModel model = (DefaultTableModel) tabelDaftar.getModel();
+            int rowCount = model.getRowCount();
+            //Remove rows one by one from the end of the table
+            for (int i = rowCount - 1; i >= 0; i--){
+                model.removeRow(i);
+            }
+            totalFieldText.setText("");
+            kembalianFieldText.setText("");
+            cashFieldText.setText("");
+        }
+        else{
+            countLines2("\\DataStok.txt");
+            c1 = ln;
+            editRecord2();
+            gantiFile("\\tmp2.txt");
+            File test = new File("c:\\minimarket\\data\\tempLogJualan.txt");
+            test.delete();
+            countLines2("\\tempLogJualan.txt");
+            checkLogJual("\\tempLogJualan.txt");
+            countLines2("\\DataStok.txt");
+            checkStock("\\DataStok.txt");
+            jumlah = 0;
+            totalFieldText.setText("");
+        }
+    }
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {                                           
+        // TODO add your handling code here:
+        selectedComboBox = jComboBox1.getSelectedItem().toString();
+        oldNama = "Nama Barang : "+selectedComboBox;
+        checkData2(oldNama,"\\DataStok.txt");
+        calcAndSetTotal();
+    }                                          
+
+    private void jComboBox1PopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+        selectedComboBox = jComboBox1.getSelectedItem().toString();    
+        try{
+            jumlahTextField.setText("1");
+        }
+        catch(Exception e){
+        }
+    }                                                     
+
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -764,14 +888,10 @@ public class Kasir extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Kasir.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
 
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Kasir().setVisible(true);
-                
             }
         });
     }
@@ -789,29 +909,31 @@ public class Kasir extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify                     
-    private javax.swing.JButton bayarButton;
-    private javax.swing.JTextField cashFieldText;
-    private javax.swing.JButton clearButton;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jumlahTextField;
-    private javax.swing.JTextField kembalianFieldText;
-    private javax.swing.JButton refreshButton;
-    private javax.swing.JTextField subtotalTextField;
-    private javax.swing.JTable tabelBarang;
-    private javax.swing.JTable tabelDaftar;
-    private javax.swing.JButton tambahButton;
-    private javax.swing.JButton totalButton;
-    private javax.swing.JTextField totalFieldText;
+    javax.swing.JButton ByrButton;
+    javax.swing.JButton btnCancel;
+    javax.swing.JButton btnLogout;
+    javax.swing.JTextField cashFieldText;
+    javax.swing.JButton clearBtn;
+    javax.swing.JComboBox<String> jComboBox1;
+    javax.swing.JLabel jLabel1;
+    javax.swing.JLabel jLabel2;
+    javax.swing.JLabel jLabel3;
+    javax.swing.JLabel jLabel5;
+    javax.swing.JLabel jLabel6;
+    javax.swing.JLabel jLabel7;
+    javax.swing.JLabel jLabel8;
+    javax.swing.JLabel jLabel9;
+    javax.swing.JPanel jPanel1;
+    javax.swing.JScrollPane jScrollPane1;
+    javax.swing.JScrollPane jScrollPane2;
+    javax.swing.JTextField jumlahTextField;
+    javax.swing.JTextField kembalianFieldText;
+    javax.swing.JButton refreshButton;
+    javax.swing.JTextField subtotalTextField;
+    javax.swing.JTable tabelBarang;
+    javax.swing.JTable tabelDaftar;
+    javax.swing.JButton tambahBtn;
+    javax.swing.JButton totalBtn;
+    javax.swing.JTextField totalFieldText;
     // End of variables declaration                   
 }
