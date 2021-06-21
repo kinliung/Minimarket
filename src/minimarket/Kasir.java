@@ -149,11 +149,7 @@ public class Kasir extends javax.swing.JFrame {
             Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, e);
         }
     }
-    
-    
-    
-    
-    
+
     public void editRecord2(){
         File oldFile1 = new File("c:\\minimarket\\data\\DataStok.txt");
         File oldFile2 = new File("c:\\minimarket\\data\\tempLogJualan.txt");
@@ -274,6 +270,31 @@ public class Kasir extends javax.swing.JFrame {
             Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, e);
         }
     }
+    
+    public void printLog(){
+        try{
+            String cekData;
+            FileWriter fw = new FileWriter("c:\\minimarket\\data\\transaksiJualTercatat.txt",true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            countLines2("\\tempLogJualan.txt");
+            RandomAccessFile raf = new RandomAccessFile("c:\\minimarket\\data\\tempLogJualan.txt", "rw");
+            for(int i=0; i<(ln-2); i++){
+                cekData = raf.readLine();
+                pw.println(cekData);
+            }
+            pw.println();
+            pw.flush();
+            raf.close();
+            pw.close();
+            bw.close();
+            fw.close();
+        }
+        catch (Exception e) {
+            Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+    
     
     
     
@@ -821,6 +842,7 @@ public class Kasir extends javax.swing.JFrame {
                 int kembali = cash - jumlah;
                 jumlah = 0;
                 kembalianFieldText.setText(String.valueOf(kembali));
+                printLog();
                 File test = new File("c:\\minimarket\\data\\tempLogJualan.txt");
                 test.delete();
             }
@@ -853,7 +875,6 @@ public class Kasir extends javax.swing.JFrame {
             }
             else{
                 addData2(selectedComboBox, jumlahPembelian, outSubtotal, "\\tempLogJualan.txt");
-                addData2(selectedComboBox, jumlahPembelian, outSubtotal, "\\transaksiJualTercatat.txt");
                 String filepath = "c:\\minimarket\\data\\DataStok.txt";
                 String newStok = "Stock : "+stokAkhir;
                 editRecord(oldNama,newStok);
