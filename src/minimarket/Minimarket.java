@@ -40,6 +40,19 @@ public class Minimarket extends JFrame {
         }
     }
     
+    /* Ini adalah Test 
+    test
+    */
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     void readFile(String namaFile){
         try {
             FileReader fr = new FileReader(f+namaFile);
@@ -172,6 +185,8 @@ class Login extends JFrame implements ActionListener {
         Kasir = new JButton("Kasir");
         Manager = new JButton("Manager");
         
+        
+
         Kasir.addActionListener(this);
         Manager.addActionListener(this);
         
@@ -201,7 +216,6 @@ class Login extends JFrame implements ActionListener {
         buttonPane3.setLayout(new BorderLayout());
         buttonPane3.add(buttonPane, BorderLayout.NORTH);
         buttonPane3.add(buttonPane2, BorderLayout.CENTER);
-
         loginFrame.add(buttonPane3,BorderLayout.CENTER);
         loginFrame.setLocationRelativeTo(null);
     }
