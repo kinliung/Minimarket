@@ -199,7 +199,6 @@ public class cekStock extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(Minimarket.notepad.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
     
                         
