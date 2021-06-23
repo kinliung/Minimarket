@@ -40,19 +40,6 @@ public class Minimarket extends JFrame {
         }
     }
     
-    /* Ini adalah Test 
-    test
-    */
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     void readFile(String namaFile){
         try {
             FileReader fr = new FileReader(f+namaFile);
@@ -148,14 +135,12 @@ public class Minimarket extends JFrame {
                     raf.readLine();
                 }
             }
-            
         } catch (FileNotFoundException ex) {
             Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(notepad.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
     
     void countLines(String namaFile){
         try {
@@ -174,7 +159,6 @@ public class Minimarket extends JFrame {
     } 
 }
 
-
 class Login extends JFrame implements ActionListener {
     private JFrame loginFrame;
     private JButton Kasir, Manager;
@@ -184,8 +168,6 @@ class Login extends JFrame implements ActionListener {
         loginFrame = new JFrame("Pengguna");
         Kasir = new JButton("Kasir");
         Manager = new JButton("Manager");
-        
-        
 
         Kasir.addActionListener(this);
         Manager.addActionListener(this);
@@ -616,10 +598,6 @@ class LogMAN extends JFrame implements ActionListener {
     }
 }
 
-
-
-
-
 class Manager extends JFrame implements ActionListener {
     private JFrame loginFrame;
     private JButton inputBarang, cekStok, logOut;
@@ -679,4 +657,3 @@ class Manager extends JFrame implements ActionListener {
         }
     }
 }
-
