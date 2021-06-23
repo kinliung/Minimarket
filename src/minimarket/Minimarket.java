@@ -165,25 +165,49 @@ public class Minimarket extends JFrame {
 class Login extends JFrame implements ActionListener {
     private JFrame loginFrame;
     private JButton Kasir, Manager;
+    private JLabel develop, nama1, nama2, nama3;
 
     public Login() {
         loginFrame = new JFrame("Pengguna");
         Kasir = new JButton("Kasir");
         Manager = new JButton("Manager");
-
+        
         Kasir.addActionListener(this);
         Manager.addActionListener(this);
+        
+        develop = new JLabel("Developed By :");
+        nama1 = new JLabel("Muhammad Fahrul Ramadhan D1042191003");
+        nama2 = new JLabel("Scoriny Noor Hasanah D1042191004");
+        nama3 = new JLabel("Kin Liung D1042191005");
 
         JPanel buttonPane = new JPanel();
+        buttonPane.setPreferredSize(new Dimension(100,80));
         buttonPane.add(Kasir);
         buttonPane.add(Manager);
+        
+        JPanel buttonPane2 = new JPanel();
+        buttonPane2.setLayout(new BoxLayout(buttonPane2, BoxLayout.Y_AXIS));
+        develop.setAlignmentX(CENTER_ALIGNMENT);
+        nama1.setAlignmentX(CENTER_ALIGNMENT);
+        nama2.setAlignmentX(CENTER_ALIGNMENT);
+        nama3.setAlignmentX(CENTER_ALIGNMENT);
+        
+        buttonPane2.add(develop);
+        buttonPane2.add(nama1);
+        buttonPane2.add(nama2);
+        buttonPane2.add(nama3);
+        
+        JPanel buttonPane3 = new JPanel();
+        buttonPane3.setLayout(new BorderLayout());
+        buttonPane3.add(buttonPane, BorderLayout.NORTH);
+        buttonPane3.add(buttonPane2, BorderLayout.CENTER);
 
-        loginFrame.add(buttonPane, BorderLayout.CENTER);
+        loginFrame.add(buttonPane3,BorderLayout.CENTER);
         loginFrame.setLocationRelativeTo(null);
     }
 
     public void launchFrame() {	
-        loginFrame.setSize(250,200);
+        loginFrame.setSize(300,300);
         loginFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER,40,40));
         loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         loginFrame.setVisible(true);
