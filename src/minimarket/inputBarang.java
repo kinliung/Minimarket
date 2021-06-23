@@ -303,14 +303,6 @@ public class inputBarang extends javax.swing.JFrame {
         
         ((AbstractDocument) (jTextField2.getDocument())).setDocumentFilter(df);
         ((AbstractDocument) (jTextField3.getDocument())).setDocumentFilter(df);
-        
-        
-        
-        
-        
-        
-        
-        
     }                      
     
     
