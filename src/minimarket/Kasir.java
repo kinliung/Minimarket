@@ -115,8 +115,8 @@ public class Kasir extends javax.swing.JFrame {
     }
     
     public void editRecord(String oldNama, String newStok){
-        File oldFile = new File("c:\\minimarket\\data\\DataStok.txt");
-        File newFile = new File("c:\\minimarket\\data\\tmp.txt");
+        //File oldFile = new File("c:\\minimarket\\data\\DataStok.txt");
+        //File newFile = new File("c:\\minimarket\\data\\tmp.txt");
         String cekData;
         try{
             FileWriter fw = new FileWriter("c:\\minimarket\\data\\tmp.txt",true);
@@ -151,11 +151,11 @@ public class Kasir extends javax.swing.JFrame {
     }
 
     public void editRecord2(){
-        File oldFile1 = new File("c:\\minimarket\\data\\DataStok.txt");
-        File oldFile2 = new File("c:\\minimarket\\data\\tempLogJualan.txt");
+        //File oldFile1 = new File("c:\\minimarket\\data\\DataStok.txt");
+        //File oldFile2 = new File("c:\\minimarket\\data\\tempLogJualan.txt");
         countLines2("\\tempLogJualan.txt"); //WARNING : ini bisa create file secara otomatis
         c2 = ln;
-        File newFile = new File("c:\\minimarket\\data\\tmp2.txt");
+        //File newFile = new File("c:\\minimarket\\data\\tmp2.txt");
         String cekData1 = ""; String cekData2 = ""; String cekData3 = "";
         int jumlah = 0; int jumlah2 = 0; int jumlah3 = 0; int total = 0; int salah=1;
         try{
@@ -294,12 +294,6 @@ public class Kasir extends javax.swing.JFrame {
             Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, e);
         }
     }
-    
-    
-    
-    
-    
-    
     
     void gantiFile(String namaFile){
         try{
@@ -801,7 +795,7 @@ public class Kasir extends javax.swing.JFrame {
             }
         };
         ((AbstractDocument) (jumlahTextField.getDocument())).setDocumentFilter(df);
-        
+        ((AbstractDocument) (cashFieldText.getDocument())).setDocumentFilter(df);
         jumlahTextField.setText("1");
     }                      
 

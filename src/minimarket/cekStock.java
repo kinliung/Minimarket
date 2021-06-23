@@ -12,6 +12,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
 public class cekStock extends javax.swing.JFrame {
     public cekStock() {
@@ -307,15 +311,13 @@ public class cekStock extends javax.swing.JFrame {
                     .addComponent(updateButton))
                 .addContainerGap(38, Short.MAX_VALUE))
         );
-
+        
         backButton.setText("Back");
         backButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backButtonActionPerformed(evt);
             }
         });
-        
-        
         
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -379,7 +381,40 @@ public class cekStock extends javax.swing.JFrame {
         setTitle("Manager - Cek Stok Barang");
         addComboBox();
         checkStock("\\DataStok.txt");
-    }       
+        
+        DocumentFilter df = new DocumentFilter() {
+            @Override
+            public void insertString(DocumentFilter.FilterBypass fb, int i, String string, AttributeSet as) throws BadLocationException {
+
+                if (isDigit(string)) {
+                    super.insertString(fb, i, string, as);
+                }
+            }
+            @Override
+            public void remove(DocumentFilter.FilterBypass fb, int i, int i1) throws BadLocationException {
+                super.remove(fb, i, i1);
+            }
+            @Override
+            public void replace(DocumentFilter.FilterBypass fb, int i, int i1, String string, AttributeSet as) throws BadLocationException {
+                if (isDigit(string)) {
+                    super.replace(fb, i, i1, string, as);
+                }
+            }
+            private boolean isDigit(String string) {
+                for (int n = 0; n < string.length(); n++) {
+                    char c = string.charAt(n);//get a single character of the string
+                    //System.out.println(c);
+                    if (!Character.isDigit(c)) {//if its an alphabetic character or white space
+                        return false;
+                    }
+                }
+                return true;
+            }
+        };
+        
+        ((AbstractDocument) (stokTextField.getDocument())).setDocumentFilter(df);
+        ((AbstractDocument) (hargaTextField.getDocument())).setDocumentFilter(df);
+    }
     
     
     void addComboBox(){

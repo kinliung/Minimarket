@@ -14,6 +14,10 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
 public class inputBarang extends javax.swing.JFrame {
     String choice = "";
@@ -266,6 +270,47 @@ public class inputBarang extends javax.swing.JFrame {
         setLocation(((screenSize.width - frameSize.width) / 2),
         ((screenSize.height - frameSize.height) / 2));
         setVisible(true);
+        
+        DocumentFilter df = new DocumentFilter() {
+            @Override
+            public void insertString(DocumentFilter.FilterBypass fb, int i, String string, AttributeSet as) throws BadLocationException {
+
+                if (isDigit(string)) {
+                    super.insertString(fb, i, string, as);
+                }
+            }
+            @Override
+            public void remove(DocumentFilter.FilterBypass fb, int i, int i1) throws BadLocationException {
+                super.remove(fb, i, i1);
+            }
+            @Override
+            public void replace(DocumentFilter.FilterBypass fb, int i, int i1, String string, AttributeSet as) throws BadLocationException {
+                if (isDigit(string)) {
+                    super.replace(fb, i, i1, string, as);
+                }
+            }
+            private boolean isDigit(String string) {
+                for (int n = 0; n < string.length(); n++) {
+                    char c = string.charAt(n);//get a single character of the string
+                    //System.out.println(c);
+                    if (!Character.isDigit(c)) {//if its an alphabetic character or white space
+                        return false;
+                    }
+                }
+                return true;
+            }
+        };
+        
+        ((AbstractDocument) (jTextField2.getDocument())).setDocumentFilter(df);
+        ((AbstractDocument) (jTextField3.getDocument())).setDocumentFilter(df);
+        
+        
+        
+        
+        
+        
+        
+        
     }                      
     
     
