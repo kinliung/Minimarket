@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package minimarket;
 
 import java.awt.Dimension;
@@ -41,12 +36,12 @@ public class Kasir extends javax.swing.JFrame {
     int ln, hargaBarang, stokBarang, jumlahPembelian, stokTersedia, price, outSubtotal, totalharga;
     int c1 = 0; int c2 = 0;
     int jumlah;
-    
     int total;
     
     public Kasir() {
         initComponents();
     }
+    
     class notepad {
 
         public notepad() {
@@ -393,7 +388,6 @@ public class Kasir extends javax.swing.JFrame {
                     break;
                 }
                 else if (i==(ln-6)){
-                    //System.out.println("Stok tdk tersedia");
                     nilai = 0;
                     break;
                 }
@@ -412,7 +406,6 @@ public class Kasir extends javax.swing.JFrame {
     
     void calcAndSetTotal() {
                 int sum = price;
-
                 if (!jumlahTextField.getText().isEmpty()) {
                     sum *= Integer.parseInt(jumlahTextField.getText());//we must add this
                     subtotalTextField.setText(String.valueOf(sum));
@@ -443,7 +436,6 @@ public class Kasir extends javax.swing.JFrame {
     
     @SuppressWarnings("unhecked")                
     private void initComponents() {
-
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
