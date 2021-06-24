@@ -347,7 +347,7 @@ public class logTransaksi extends javax.swing.JFrame {
     
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         titleLabel = new javax.swing.JLabel();
@@ -454,12 +454,6 @@ public class logTransaksi extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(inputBarangButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(updateStockButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(loginCashButton, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -471,10 +465,17 @@ public class logTransaksi extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(backButton, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(stokBarangLabel)
-                            .addComponent(refreshButton))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(inputBarangButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(updateStockButton))
+                            .addComponent(stokBarangLabel, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(refreshButton, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(loginCashButton, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -506,15 +507,15 @@ public class logTransaksi extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {                                           
         setVisible(false);
         Manager mn = new Manager();
         mn.launchFrame();
-    }//GEN-LAST:event_backButtonActionPerformed
+    }                                          
 
-    private void cancelAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelAllButtonActionPerformed
+    private void cancelAllButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                
         File checkEmptyFile = new File("c:\\minimarket\\data\\transaksiJualTercatat.txt");
         if (checkEmptyFile.length() == 0) {
             DefaultTableModel model = (DefaultTableModel) tabelLogTransaksi.getModel();
@@ -544,13 +545,13 @@ public class logTransaksi extends javax.swing.JFrame {
                 checkLogJual("\\transaksiJualTercatat.txt");
             }
         }
-    }//GEN-LAST:event_cancelAllButtonActionPerformed
+    }                                               
 
-    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {                                              
         // TODO add your handling code here:
-    }//GEN-LAST:event_refreshButtonActionPerformed
+    }                                             
 
-    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
         File checkEmptyFile = new File("c:\\minimarket\\data\\transaksiJualTercatat.txt");
         if (checkEmptyFile.length() == 0) {
             DefaultTableModel model = (DefaultTableModel) tabelLogTransaksi.getModel();
@@ -580,34 +581,34 @@ public class logTransaksi extends javax.swing.JFrame {
                 checkLogJual("\\transaksiJualTercatat.txt");
             }
         } 
-    }//GEN-LAST:event_cancelButtonActionPerformed
+    }                                            
 
-    private void inputBarangButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputBarangButtonActionPerformed
+    private void inputBarangButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                  
         setVisible(false);
         inputBarang ib = new inputBarang();
         ib.setVisible(true);
-    }//GEN-LAST:event_inputBarangButtonActionPerformed
+    }                                                 
 
-    private void loginCashButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginCashButtonActionPerformed
+    private void loginCashButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                
         setVisible(false);
         LogCAS log = new LogCAS();
         log.launchFrame();
         setVisible(false);
-    }//GEN-LAST:event_loginCashButtonActionPerformed
+    }                                               
 
-    private void updateStockButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateStockButtonActionPerformed
+    private void updateStockButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                  
         setVisible(false);
         cekStock cekstk = new cekStock();
         cekstk.setVisible(true);
-    }//GEN-LAST:event_updateStockButtonActionPerformed
+    }                                                 
 
-    private void tabelLogTransaksiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelLogTransaksiMouseClicked
+    private void tabelLogTransaksiMouseClicked(java.awt.event.MouseEvent evt) {                                               
         int i = tabelLogTransaksi.getSelectedRow();
         namaBarang2 = tabelLogTransaksi.getValueAt(i, 0).toString();
         stokBarang2 = tabelLogTransaksi.getValueAt(i, 1).toString();
         //System.out.println(namaBarang2);
         //System.out.println(stokBarang2);
-    }//GEN-LAST:event_tabelLogTransaksiMouseClicked
+    }                                              
 
     /**
      * @param args the command line arguments
@@ -664,7 +665,7 @@ public class logTransaksi extends javax.swing.JFrame {
     
     
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JButton backButton;
     private javax.swing.JButton cancelAllButton;
     private javax.swing.JButton cancelButton;
@@ -678,5 +679,5 @@ public class logTransaksi extends javax.swing.JFrame {
     private javax.swing.JTable tabelLogTransaksi;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JButton updateStockButton;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }
