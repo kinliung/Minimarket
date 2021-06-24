@@ -5,9 +5,12 @@
  */
 package minimarket;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,8 +24,8 @@ import javax.swing.table.DefaultTableModel;
 public class logTransaksi extends javax.swing.JFrame {
 
     File f = new File("c:\\minimarket\\data");
-    String jenisBarang, namaBarang, tanggalMasuk, selectedComboBox;
-    int ln, hargaBarang, stokBarang;
+    String jenisBarang, namaBarang, namaBarang2, stokBarang2, tanggalMasuk, selectedComboBox;
+    int ln, c1, c2, hargaBarang, stokBarang, totalharga;
     
     /**
      * Creates new form logTransaksi
@@ -62,6 +65,46 @@ public class logTransaksi extends javax.swing.JFrame {
         }
     }
     
+    void checkLogJual(String namaFile){
+        try {
+            File checkEmptyFile = new File(f+namaFile);
+            if (checkEmptyFile.length() == 0) {
+                DefaultTableModel model = (DefaultTableModel) tabelLogTransaksi.getModel();
+                int rowCount = model.getRowCount();
+                //Remove rows one by one from the end of the table
+                for (int i = rowCount - 1; i >= 0; i--){
+                    model.removeRow(i);
+                }
+            }
+            else{
+                DefaultTableModel model = (DefaultTableModel) tabelLogTransaksi.getModel();
+                int rowCount = model.getRowCount();
+                //Remove rows one by one from the end of the table
+                for (int i = rowCount - 1; i >= 0; i--) {
+                    model.removeRow(i);
+                }
+                RandomAccessFile raf = new RandomAccessFile(f+namaFile, "rw");
+                for(int i=1; i<=ln; i+=4){
+                    namaBarang = raf.readLine().substring(7);
+                    stokBarang = Integer.parseInt(raf.readLine().substring(9));
+                    totalharga = Integer.parseInt(raf.readLine().substring(11));
+                    model.addRow(new Object[]{namaBarang, stokBarang, totalharga});
+                    if (i==(ln-4)){
+                        break;
+                    }
+                    for(int k=1; k<=1; k++){
+                        raf.readLine();
+                    }
+                }
+                raf.close();
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Kasir.notepad.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Kasir.notepad.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     void countLines2(String namaFile){
         try {
             ln = 1;
@@ -76,6 +119,76 @@ public class logTransaksi extends javax.swing.JFrame {
             Logger.getLogger(Minimarket.notepad.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    
+    public void editRecord2(String namaBarang2, String stokBarang2){
+        countLines2("\\transaksiJualTercatat.txt"); //WARNING : ini bisa create file secara otomatis
+        c1 = ln;
+        String cekData1 = ""; String cekData2 = ""; String cekData3 = ""; String cekData4 = "";
+        int jumlah = 0; int jumlah2 = 0; int jumlah3 = 0; int total = 0; int salah=1;
+        try{
+            FileWriter fw = new FileWriter("c:\\minimarket\\data\\tmp3.txt",true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            RandomAccessFile raf = new RandomAccessFile("c:\\minimarket\\data\\transaksiJualTercatat.txt", "rw");
+            for(int i=1; i<(c1-3); i+=4){
+                cekData1 = raf.readLine().substring(7);
+                if(cekData1.equals(namaBarang2)){
+                    cekData2 = raf.readLine().substring(9);
+                    if(cekData2.equals(stokBarang2)){
+                        jumlah2 = Integer.parseInt(cekData2);
+                        RandomAccessFile raf2 = new RandomAccessFile("c:\\minimarket\\data\\DataStok.txt", "rw");
+                        for(int j=1; j<(c2-3); j+=7){
+                            cekData3 = raf2.readLine();
+                            pw.println(cekData3);
+                            cekData3 = raf2.readLine().substring(14);
+                            cekData4 = "Nama Barang : "+cekData3;
+                            if(cekData1.equals(cekData3)){
+                                pw.println(cekData4);
+                                cekData3 = raf2.readLine();
+                                pw.println(cekData3);
+                                cekData3 = raf2.readLine().substring(8);
+                                jumlah = Integer.parseInt(cekData3);
+                                jumlah3 = jumlah2 + jumlah;
+                                pw.println("Stock : "+jumlah3);
+                                for(int k=1; k<=3; k++){
+                                    cekData3 = raf2.readLine();
+                                    pw.println(cekData3);
+                                }
+                            }
+                            else{
+                                pw.println(cekData4);
+                                for(int k=1; k<=5; k++){
+                                    cekData3 = raf2.readLine();
+                                    pw.println(cekData3);
+                                }
+                            }
+                        }
+                        raf2.close();
+                    }
+                    else{
+                        cekData2 = raf.readLine();
+                        cekData2 = raf.readLine();
+                    }
+                }
+                else{
+                    cekData1 = raf.readLine();
+                    cekData1 = raf.readLine();
+                    cekData1 = raf.readLine();
+                }
+            }
+            pw.flush();
+            raf.close();
+            pw.close();
+            bw.close();
+            fw.close();
+        }
+        catch (Exception e) {
+            Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+    
+    
     
     
     
@@ -133,6 +246,11 @@ public class logTransaksi extends javax.swing.JFrame {
                 "Nama", "Jumlah", "Subtotal"
             }
         ));
+        tabelLogTransaksi.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelLogTransaksiMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tabelLogTransaksi);
 
         cancelAllButton.setText("Cancel All Transaktion");
@@ -226,7 +344,7 @@ public class logTransaksi extends javax.swing.JFrame {
                     .addComponent(backButton)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cancelAllButton)
                     .addComponent(cancelButton))
                 .addGap(8, 8, 8)
@@ -246,7 +364,9 @@ public class logTransaksi extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
-        // TODO add your handling code here:
+        setVisible(false);
+        Manager mn = new Manager();
+        mn.launchFrame();
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void cancelAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelAllButtonActionPerformed
@@ -258,7 +378,17 @@ public class logTransaksi extends javax.swing.JFrame {
     }//GEN-LAST:event_refreshButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        // TODO add your handling code here:
+        countLines2("\\DataStok.txt");
+        c2 = ln;
+        editRecord2(namaBarang2, stokBarang2);
+        Kasir ks = new Kasir();
+        ks.gantiFile("\\tmp3.txt");
+        cekStock cs = new cekStock();
+        cs.createFolder();
+        cs.readFile("\\DataStok.txt");
+        countLines2("\\DataStok.txt");
+        System.out.println(ln);
+        checkStock("\\DataStok.txt");
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void inputBarangButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputBarangButtonActionPerformed
@@ -279,6 +409,14 @@ public class logTransaksi extends javax.swing.JFrame {
         cekStock cekstk = new cekStock();
         cekstk.setVisible(true);
     }//GEN-LAST:event_updateStockButtonActionPerformed
+
+    private void tabelLogTransaksiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelLogTransaksiMouseClicked
+        int i = tabelLogTransaksi.getSelectedRow();
+        namaBarang2 = tabelLogTransaksi.getValueAt(i, 0).toString();
+        stokBarang2 = tabelLogTransaksi.getValueAt(i, 1).toString();
+        System.out.println(namaBarang2);
+        System.out.println(stokBarang2);
+    }//GEN-LAST:event_tabelLogTransaksiMouseClicked
 
     /**
      * @param args the command line arguments
@@ -327,6 +465,10 @@ public class logTransaksi extends javax.swing.JFrame {
         cs.readFile("\\DataStok.txt");
         lg.countLines2("\\DataStok.txt");
         lg.checkStock("\\DataStok.txt");
+        
+        cs.readFile("\\transaksiJualTercatat.txt");
+        lg.countLines2("\\transaksiJualTercatat.txt");
+        lg.checkLogJual("\\transaksiJualTercatat.txt");
     }
     
     
