@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import java.util.Arrays;
 
 /**
  *
@@ -34,6 +35,21 @@ public class logTransaksi extends javax.swing.JFrame {
         initComponents();
     }
 
+    void gantiFile(String namaFile){
+        try{
+            File oldFile = new File(f+"\\transaksiJualTercatat.txt");
+            oldFile.delete();
+            File dump = new File(f+"\\transaksiJualTercatat.txt");
+            File newFile = new File(f+namaFile);
+            newFile.renameTo(dump);
+        }
+        catch(Exception e){
+            System.out.println("gagal");
+        }
+    }
+    
+    
+    
     void checkStock(String namaFile){
         try {
             DefaultTableModel model = (DefaultTableModel) stockTable.getModel();
@@ -120,22 +136,33 @@ public class logTransaksi extends javax.swing.JFrame {
         }
     }
     
-    
     public void editRecord2(String namaBarang2, String stokBarang2){
         countLines2("\\transaksiJualTercatat.txt"); //WARNING : ini bisa create file secara otomatis
         c1 = ln;
-        String cekData1 = ""; String cekData2 = ""; String cekData3 = ""; String cekData4 = "";
-        int jumlah = 0; int jumlah2 = 0; int jumlah3 = 0; int total = 0; int salah=1;
+        String cekData1 = ""; String cekData2 = ""; String cekData3 = ""; String cekData4 = ""; String cekData5 = "";
+        String cekData6 = "";
+        String checkDouble[] = new String[100];
+        int jumlah = 0; int jumlah2 = 0; int jumlah3 = 0; int salah=1; int size = 0;
         try{
             FileWriter fw = new FileWriter("c:\\minimarket\\data\\tmp3.txt",true);
             BufferedWriter bw = new BufferedWriter(fw);
             PrintWriter pw = new PrintWriter(bw);
+            FileWriter fw2 = new FileWriter("c:\\minimarket\\data\\tmp4.txt",true);
+            BufferedWriter bw2 = new BufferedWriter(fw2);
+            PrintWriter pw2 = new PrintWriter(bw2);
             RandomAccessFile raf = new RandomAccessFile("c:\\minimarket\\data\\transaksiJualTercatat.txt", "rw");
             for(int i=1; i<(c1-3); i+=4){
                 cekData1 = raf.readLine().substring(7);
+                cekData5 = "Nama : "+cekData1;
                 if(cekData1.equals(namaBarang2)){
                     cekData2 = raf.readLine().substring(9);
-                    if(cekData2.equals(stokBarang2)){
+                    cekData6 = "Jumlah : "+cekData2;
+                    for(int q=0; q<size; q++){
+                        if(Arrays.asList(checkDouble).contains(cekData1)){
+                            salah = 0;
+                       }
+                    }
+                    if(cekData2.equals(stokBarang2) && salah==1){
                         jumlah2 = Integer.parseInt(cekData2);
                         RandomAccessFile raf2 = new RandomAccessFile("c:\\minimarket\\data\\DataStok.txt", "rw");
                         for(int j=1; j<(c2-3); j+=7){
@@ -164,17 +191,149 @@ public class logTransaksi extends javax.swing.JFrame {
                                 }
                             }
                         }
+                        checkDouble[size] = cekData1;
+                        size++;
+                        raf.readLine();
+                        raf.readLine();
                         raf2.close();
                     }
                     else{
-                        cekData2 = raf.readLine();
-                        cekData2 = raf.readLine();
+                        pw2.println(cekData5);
+                        pw2.println(cekData6);
+                        for(int j=1; j<=2; j++){
+                            cekData2 = raf.readLine();
+                            pw2.println(cekData2);
+                        }
                     }
                 }
                 else{
-                    cekData1 = raf.readLine();
-                    cekData1 = raf.readLine();
-                    cekData1 = raf.readLine();
+                    pw2.println(cekData5);
+                    for(int j=1; j<=3; j++){
+                        cekData1 = raf.readLine();
+                        pw2.println(cekData1);
+                    }
+                }
+            }
+            pw.flush();
+            raf.close();
+            pw.close();
+            bw.close();
+            fw.close();
+            pw2.flush();
+            pw2.close();
+            bw2.close();
+            fw2.close();
+        }
+        catch (Exception e) {
+            Logger.getLogger(cekStock.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+    
+    public void editRecord3(){
+        countLines2("\\transaksiJualTercatat.txt"); //WARNING : ini bisa create file secara otomatis
+        c2 = ln;
+        String cekData1 = ""; String cekData2 = ""; String cekData3 = "";
+        int jumlah = 0; int jumlah2 = 0; int jumlah3 = 0; int total = 0; int salah=1;
+        try{
+            FileWriter fw = new FileWriter("c:\\minimarket\\data\\tmp3.txt",true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            RandomAccessFile raf = new RandomAccessFile("c:\\minimarket\\data\\DataStok.txt", "rw");
+            for(int i=1; i<(c1-3); i+=7){
+                int p = c2-3;
+                cekData1 = raf.readLine();
+                pw.println(cekData1);
+                cekData1 = raf.readLine();
+                RandomAccessFile raf2 = new RandomAccessFile("c:\\minimarket\\data\\transaksiJualTercatat.txt", "rw");
+                for(int j=1; j<(c2-3); j+=4){
+                    p-=4;
+                    cekData2 = "Nama Barang : "+raf2.readLine().substring(7);
+                    if(cekData1.equals(cekData2)){
+                        cekData2 = raf2.readLine().substring(9);
+                        jumlah2 = Integer.parseInt(cekData2);
+                        jumlah3 += jumlah2;
+                        raf2.readLine();
+                        raf2.readLine();
+                        for(int k=1; k<p; k+=4){
+                            cekData2 = "Nama Barang : "+raf2.readLine().substring(7);
+                            if(cekData1.equals(cekData2)){
+                                cekData2 = raf2.readLine().substring(9);
+                                jumlah2 = Integer.parseInt(cekData2);
+                                jumlah3 += jumlah2;
+                                raf2.readLine();
+                                raf2.readLine();
+                            }
+                            else{
+                                raf2.readLine();
+                                raf2.readLine();
+                                raf2.readLine();
+                            }
+                        }
+                        pw.println(cekData1);
+                        cekData1 = raf.readLine();
+                        pw.println(cekData1);
+                        cekData1 = raf.readLine().substring(8);
+                        jumlah = Integer.parseInt(cekData1);
+                        total = jumlah + jumlah3;
+                        jumlah3 = 0;
+                        pw.println("Stock : "+total);
+                        cekData1 = raf.readLine();
+                        pw.println(cekData1);
+                        cekData1 = raf.readLine();
+                        pw.println(cekData1);
+                        cekData1 = raf.readLine();
+                        pw.println(cekData1);
+                        raf2.close();
+                        break;
+                    }
+                    else{
+                        raf2.readLine();
+                        raf2.readLine();
+                        raf2.readLine();
+                        for(int m=1; m<p; m+=4){
+                            cekData2 = "Nama Barang : "+raf2.readLine().substring(7);
+                            if(cekData1.equals(cekData2)){
+                                cekData2 = raf2.readLine().substring(9);
+                                jumlah2 = Integer.parseInt(cekData2);
+                                jumlah3 += jumlah2;
+                                raf2.readLine();
+                                raf2.readLine();
+                                salah = 0;
+                            }
+                            else{
+                                raf2.readLine();
+                                raf2.readLine();
+                                raf2.readLine();
+                            }
+                        }
+                        if (salah == 0){
+                            pw.println(cekData1);
+                            cekData1 = raf.readLine();
+                            pw.println(cekData1);
+                            cekData1 = raf.readLine().substring(8);
+                            jumlah = Integer.parseInt(cekData1);
+                            total = jumlah + jumlah3;
+                            jumlah3 = 0;
+                            pw.println("Stock : "+total);
+                            cekData1 = raf.readLine();
+                            pw.println(cekData1);
+                            cekData1 = raf.readLine();
+                            pw.println(cekData1);
+                            cekData1 = raf.readLine();
+                            pw.println(cekData1);
+                            raf2.close();
+                            break;
+                        }
+                        else{
+                            pw.println(cekData1);
+                            for(int q=1; q<=5; q++){
+                                cekData1 = raf.readLine();
+                                pw.println(cekData1);
+                            }
+                            raf2.close();
+                            break;
+                        }
+                    }
                 }
             }
             pw.flush();
@@ -188,15 +347,7 @@ public class logTransaksi extends javax.swing.JFrame {
         }
     }
     
-    
-    
-    
-    
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -253,14 +404,14 @@ public class logTransaksi extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(tabelLogTransaksi);
 
-        cancelAllButton.setText("Cancel All Transaktion");
+        cancelAllButton.setText("Cancel All Transaction");
         cancelAllButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelAllButtonActionPerformed(evt);
             }
         });
 
-        cancelButton.setText("Cancel Transaktion");
+        cancelButton.setText("Cancel Transaction");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
@@ -304,6 +455,7 @@ public class logTransaksi extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(inputBarangButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -312,13 +464,6 @@ public class logTransaksi extends javax.swing.JFrame {
                         .addComponent(loginCashButton, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(refreshButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(stokBarangLabel)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(cancelAllButton)
@@ -326,20 +471,22 @@ public class logTransaksi extends javax.swing.JFrame {
                                 .addComponent(cancelButton))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 587, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(backButton, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)))
+                        .addComponent(backButton, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(stokBarangLabel)
+                            .addComponent(refreshButton))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(refreshButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(titleLabel)
-                        .addGap(30, 30, 30)))
+                .addComponent(titleLabel)
+                .addGap(1, 1, 1)
+                .addComponent(refreshButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(backButton)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -370,7 +517,35 @@ public class logTransaksi extends javax.swing.JFrame {
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void cancelAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelAllButtonActionPerformed
-        // TODO add your handling code here:
+        File checkEmptyFile = new File("c:\\minimarket\\data\\transaksiJualTercatat.txt");
+        if (checkEmptyFile.length() == 0) {
+            DefaultTableModel model = (DefaultTableModel) tabelLogTransaksi.getModel();
+            int rowCount = model.getRowCount();
+            //Remove rows one by one from the end of the table
+            for (int i = rowCount - 1; i >= 0; i--){
+                model.removeRow(i);
+            }
+        }
+        else{
+            int yesOrNo = JOptionPane.showConfirmDialog(null, "Apakah Anda Yakin Ingin Membatalkan Semua Transaksi?","WARNING!!!", JOptionPane.YES_NO_OPTION);
+            if (yesOrNo == 0){
+                countLines2("\\DataStok.txt");
+                c1 = ln;
+                editRecord3();
+                Kasir ks = new Kasir();
+                ks.gantiFile("\\tmp3.txt");
+                cekStock cs = new cekStock();
+                cs.createFolder();
+                cs.readFile("\\DataStok.txt");
+                countLines2("\\DataStok.txt");
+                checkStock("\\DataStok.txt");
+
+                gantiFile("\\tmp4.txt");
+                cs.readFile("\\transaksiJualTercatat.txt");
+                countLines2("\\transaksiJualTercatat.txt");
+                checkLogJual("\\transaksiJualTercatat.txt");
+            }
+        }
     }//GEN-LAST:event_cancelAllButtonActionPerformed
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
@@ -378,17 +553,35 @@ public class logTransaksi extends javax.swing.JFrame {
     }//GEN-LAST:event_refreshButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        countLines2("\\DataStok.txt");
-        c2 = ln;
-        editRecord2(namaBarang2, stokBarang2);
-        Kasir ks = new Kasir();
-        ks.gantiFile("\\tmp3.txt");
-        cekStock cs = new cekStock();
-        cs.createFolder();
-        cs.readFile("\\DataStok.txt");
-        countLines2("\\DataStok.txt");
-        System.out.println(ln);
-        checkStock("\\DataStok.txt");
+        File checkEmptyFile = new File("c:\\minimarket\\data\\transaksiJualTercatat.txt");
+        if (checkEmptyFile.length() == 0) {
+            DefaultTableModel model = (DefaultTableModel) tabelLogTransaksi.getModel();
+            int rowCount = model.getRowCount();
+            //Remove rows one by one from the end of the table
+            for (int i = rowCount - 1; i >= 0; i--){
+                model.removeRow(i);
+            }
+        }
+        else{
+            int yesOrNo = JOptionPane.showConfirmDialog(null, "Apakah Anda Yakin Ingin Membatalkan Transaksi Tersebut?","WARNING!!!", JOptionPane.YES_NO_OPTION);
+            if (yesOrNo == 0){
+                countLines2("\\DataStok.txt");
+                c2 = ln;
+                editRecord2(namaBarang2, stokBarang2);
+                Kasir ks = new Kasir();
+                ks.gantiFile("\\tmp3.txt");
+                cekStock cs = new cekStock();
+                cs.createFolder();
+                cs.readFile("\\DataStok.txt");
+                countLines2("\\DataStok.txt");
+                checkStock("\\DataStok.txt");
+
+                gantiFile("\\tmp4.txt");
+                cs.readFile("\\transaksiJualTercatat.txt");
+                countLines2("\\transaksiJualTercatat.txt");
+                checkLogJual("\\transaksiJualTercatat.txt");
+            }
+        } 
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void inputBarangButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputBarangButtonActionPerformed
@@ -414,8 +607,8 @@ public class logTransaksi extends javax.swing.JFrame {
         int i = tabelLogTransaksi.getSelectedRow();
         namaBarang2 = tabelLogTransaksi.getValueAt(i, 0).toString();
         stokBarang2 = tabelLogTransaksi.getValueAt(i, 1).toString();
-        System.out.println(namaBarang2);
-        System.out.println(stokBarang2);
+        //System.out.println(namaBarang2);
+        //System.out.println(stokBarang2);
     }//GEN-LAST:event_tabelLogTransaksiMouseClicked
 
     /**
