@@ -985,18 +985,6 @@ public class Kasir extends javax.swing.JFrame {
             }
         });
     }
-    
-    public void launchFrame() {
-        setSize(700, 600);
-        
-        setTitle("Kasir - Transaksi");
-        // Centering the screen on the desktop
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension frameSize = getSize();
-        setLocation(((screenSize.width - frameSize.width) / 2),
-        ((screenSize.height - frameSize.height) / 2));
-        setVisible(true);
-    }
 
     // Variables declaration - do not modify                     
     javax.swing.JButton ByrButton;

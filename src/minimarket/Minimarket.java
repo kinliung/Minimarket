@@ -600,7 +600,7 @@ class LogMAN extends JFrame implements ActionListener {
 
 class Manager extends JFrame implements ActionListener {
     private JFrame loginFrame;
-    private JButton inputBarang, cekStok, logOut;
+    private JButton inputBarang, cekStok, logOut, logtransaksi;
     private JLabel managerLabel;
     private JPanel managerPanel, buttonPane;
 
@@ -610,14 +610,17 @@ class Manager extends JFrame implements ActionListener {
         inputBarang = new JButton("Input Barang");
         cekStok = new JButton("Cek Stock");
         logOut = new JButton("Logout");
+        logtransaksi = new JButton("Log Transaksi");
         
         inputBarang.addActionListener(this);
         cekStok.addActionListener(this);
         logOut.addActionListener(this);
+        logtransaksi.addActionListener(this);
 
         buttonPane = new JPanel();
         buttonPane.add(inputBarang);
         buttonPane.add(cekStok);
+        buttonPane.add(logtransaksi);
         buttonPane.add(logOut);
 
         managerLabel = new JLabel("   Selamat Datang Manager : " + LogMAN.managerName);
@@ -649,6 +652,11 @@ class Manager extends JFrame implements ActionListener {
             loginFrame.setVisible(false);
             cekStock cekstk = new cekStock();
             cekstk.setVisible(true);
+        }
+        else if (ae.getSource() == logtransaksi){
+            loginFrame.setVisible(false);
+            logTransaksi lg = new logTransaksi();
+            lg.launch();
         }
         else if (ae.getSource() == logOut){
             loginFrame.setVisible(false);
