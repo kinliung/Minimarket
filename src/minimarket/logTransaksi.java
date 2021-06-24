@@ -48,8 +48,6 @@ public class logTransaksi extends javax.swing.JFrame {
         }
     }
     
-    
-    
     void checkStock(String namaFile){
         try {
             DefaultTableModel model = (DefaultTableModel) stockTable.getModel();
