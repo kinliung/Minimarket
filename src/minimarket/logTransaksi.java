@@ -26,7 +26,7 @@ public class logTransaksi extends javax.swing.JFrame {
 
     File f = new File("c:\\minimarket\\data");
     String jenisBarang, namaBarang, namaBarang2, stokBarang2, tanggalMasuk, selectedComboBox;
-    int ln, c1, c2, hargaBarang, stokBarang, totalharga;
+    int ln, c1, c2, hargaBarang, stokBarang, totalharga; int selectRow = 0;
     
     /**
      * Creates new form logTransaksi
@@ -562,23 +562,29 @@ public class logTransaksi extends javax.swing.JFrame {
             }
         }
         else{
-            int yesOrNo = JOptionPane.showConfirmDialog(null, "Apakah Anda Yakin Ingin Membatalkan Transaksi Tersebut?","WARNING!!!", JOptionPane.YES_NO_OPTION);
-            if (yesOrNo == 0){
-                countLines2("\\DataStok.txt");
-                c2 = ln;
-                editRecord2(namaBarang2, stokBarang2);
-                Kasir ks = new Kasir();
-                ks.gantiFile("\\tmp3.txt");
-                cekStock cs = new cekStock();
-                cs.createFolder();
-                cs.readFile("\\DataStok.txt");
-                countLines2("\\DataStok.txt");
-                checkStock("\\DataStok.txt");
+            if(selectRow == 0){
+                JOptionPane.showMessageDialog(null, "Silahkan Pilih Salah Satu Transaksi Yang Ingin Dibatalkan!");
+            }
+            else{
+                int yesOrNo = JOptionPane.showConfirmDialog(null, "Apakah Anda Yakin Ingin Membatalkan Transaksi Tersebut?","WARNING!!!", JOptionPane.YES_NO_OPTION);
+                if (yesOrNo == 0){
+                    countLines2("\\DataStok.txt");
+                    c2 = ln;
+                    editRecord2(namaBarang2, stokBarang2);
+                    Kasir ks = new Kasir();
+                    ks.gantiFile("\\tmp3.txt");
+                    cekStock cs = new cekStock();
+                    cs.createFolder();
+                    cs.readFile("\\DataStok.txt");
+                    countLines2("\\DataStok.txt");
+                    checkStock("\\DataStok.txt");
 
-                gantiFile("\\tmp4.txt");
-                cs.readFile("\\transaksiJualTercatat.txt");
-                countLines2("\\transaksiJualTercatat.txt");
-                checkLogJual("\\transaksiJualTercatat.txt");
+                    gantiFile("\\tmp4.txt");
+                    cs.readFile("\\transaksiJualTercatat.txt");
+                    countLines2("\\transaksiJualTercatat.txt");
+                    checkLogJual("\\transaksiJualTercatat.txt");
+                    selectRow = 0;
+                }
             }
         } 
     }                                            
@@ -602,12 +608,11 @@ public class logTransaksi extends javax.swing.JFrame {
         cekstk.setVisible(true);
     }                                                 
 
-    private void tabelLogTransaksiMouseClicked(java.awt.event.MouseEvent evt) {                                               
+    private void tabelLogTransaksiMouseClicked(java.awt.event.MouseEvent evt) {  
         int i = tabelLogTransaksi.getSelectedRow();
         namaBarang2 = tabelLogTransaksi.getValueAt(i, 0).toString();
         stokBarang2 = tabelLogTransaksi.getValueAt(i, 1).toString();
-        //System.out.println(namaBarang2);
-        //System.out.println(stokBarang2);
+        selectRow = 1;
     }                                              
 
     /**
